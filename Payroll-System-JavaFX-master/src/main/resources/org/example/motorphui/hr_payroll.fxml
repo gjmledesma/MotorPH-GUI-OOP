@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root" prefHeight="1024.0" prefWidth="1140.0" stylesheets="@css/payroll.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.HRPayroll">
+   <children>
+      <Label fx:id="payroll_label" layoutX="20.0" layoutY="35.0" text="Payroll">
+         <font>
+            <Font name="Poppins Bold" size="36.0" />
+         </font>
+      </Label>
+      <TableView fx:id="emp_table" layoutX="20.0" layoutY="119.0" prefHeight="754.0" prefWidth="1083.0">
+         <columns>
+            <TableColumn fx:id="empNumColumn" prefWidth="100.0" text="Employee #" />
+            <TableColumn fx:id="lastNameColumn" prefWidth="190.0" text="Last Name" />
+            <TableColumn fx:id="firstNameColumn" prefWidth="190.0" text="First Name" />
+            <TableColumn fx:id="sssColumn" prefWidth="150.0" resizable="false" text="SSS #" />
+            <TableColumn fx:id="philHealthColumn" prefWidth="150.0" text="PhilHealth #" />
+            <TableColumn fx:id="tinColumn" prefWidth="150.0" text="TIN #" />
+            <TableColumn fx:id="pagIbigColumn" prefWidth="151.0" text="Pag-Ibig #" />
+         </columns>
+      </TableView>
+      <Button fx:id="genpayroll_button" layoutX="30.0" layoutY="904.0" onAction="#onGeneratePayroll" prefHeight="36.0" prefWidth="255.0" text="Generate Payroll">
+         <font>
+            <Font name="Poppins Bold" size="16.0" />
+         </font>
+      </Button>
+   </children>
+</AnchorPane>

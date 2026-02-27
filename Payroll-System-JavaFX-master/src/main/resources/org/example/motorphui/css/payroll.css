@@ -1,0 +1,13 @@
+.root {
+    -fx-background-color: #F2F4F7;
+}
+
+#genpayroll_button:hover {
+    -fx-background-color: #F51835;
+    -fx-cursor: hand;
+}
+
+#genpayroll_button {
+    -fx-background-color: #C5172E;
+    -fx-text-fill: white;
+}
