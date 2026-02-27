@@ -1,0 +1,23 @@
+.root {
+    -fx-background-color: #F2F4F7;
+}
+
+#approve_button:hover {
+    -fx-background-color: #F51835;
+    -fx-cursor: hand;
+}
+
+#approve_button {
+    -fx-background-color: #C5172E;
+    -fx-text-fill: white;
+}
+
+#deny_button:hover {
+    -fx-background-color: #F51835;
+    -fx-cursor: hand;
+}
+
+#deny_button {
+    -fx-background-color: #C5172E;
+    -fx-text-fill: white;
+}
