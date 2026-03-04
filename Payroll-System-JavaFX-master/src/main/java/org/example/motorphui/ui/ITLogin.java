@@ -1,118 +1,71 @@
 package org.example.motorphui.ui;
 
-import org.example.motorphui.service.Authentication;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
+public class ITLogin extends javax.swing.JFrame {
 
-public class ITLogin extends Authentication {
-
-    @FXML
-    private Button login_button;
-
-    @FXML
-    private Label back_label;
-
-    @FXML
-    private TextField username_field;
-
-    @FXML
-    private PasswordField password_field;
-
-    @FXML
-    private TextField visible_password_field;
-
-    @FXML
-    private CheckBox show_password_check;
-
-    @FXML
-    private void initialize() {
-        password_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!visible_password_field.isFocused()) {
-                visible_password_field.setText(newValue);
-            }
-        });
-
-        visible_password_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!password_field.isFocused()) {
-                password_field.setText(newValue);
-            }
-        });
-
-        // toggle visibility of password field
-        show_password_check.setOnAction(event -> {
-            boolean show = show_password_check.isSelected();
-            visible_password_field.setVisible(show);
-            visible_password_field.setManaged(show);
-            password_field.setVisible(!show);
-            password_field.setManaged(!show);
-        });
+    public ITLogin() {
+        initComponents();
     }
 
-    @FXML
-    private void handleLoginButton(ActionEvent event) {
-        String username = username_field.getText();
-        String password = password_field.getText();
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        titleLabel = new javax.swing.JLabel();
+        descriptionLabel = new javax.swing.JLabel();
+        buttonPanel = new javax.swing.JPanel();
+        hrdashboardButton = new javax.swing.JButton();
+        landingpageButton = new javax.swing.JButton();
 
-        if (username.trim().isEmpty() || password.trim().isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Login Failed", "All fields are required.");
-            return;
-        }
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("ITLogin");
 
-        // Authenticate user
-        if (Authentication.authenticateHR(username, password)) {
+        titleLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        titleLabel.setText("ITLogin");
 
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_dashboard.fxml"));
-                Parent root = loader.load();
+        descriptionLabel.setText("Swing-based screen generated for Apache NetBeans GUI editing.");
 
-                Stage stage = (Stage) login_button.getScene().getWindow();
-                Scene scene = new Scene(root);
+        buttonPanel.setLayout(new java.awt.GridLayout(0, 2, 8, 8));
+        hrdashboardButton.setText("Open HRDashboard");
+        hrdashboardButton.addActionListener(evt -> openFrame(new HRDashboard()));
+        landingpageButton.setText("Open LandingPage");
+        landingpageButton.addActionListener(evt -> openFrame(new LandingPage()));
+        buttonPanel.add(hrdashboardButton);
+        buttonPanel.add(landingpageButton);
 
-                stage.setMinWidth(1440);
-                stage.setMinHeight(1024);
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+                        .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(titleLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(descriptionLabel)
+                    .addGap(18, 18, 18)
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                    .addContainerGap())
+        );
 
-                stage.setWidth(1440);
-                stage.setHeight(1024);
-
-                stage.setScene(scene);
-                stage.show();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error", "Error loading profile screen.");
-            }
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid credentials. Please try again.");
-        }
+        pack();
+        setLocationRelativeTo(null);
     }
 
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    protected void openFrame(javax.swing.JFrame frame) {
+        frame.setVisible(true);
+        dispose();
     }
 
-    @FXML
-    private void handleBackClick(MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/landing_page.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) back_label.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JButton hrdashboardButton;
+    private javax.swing.JButton landingpageButton;
 }

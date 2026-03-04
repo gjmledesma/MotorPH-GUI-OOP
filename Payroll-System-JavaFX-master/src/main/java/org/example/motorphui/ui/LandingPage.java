@@ -1,120 +1,81 @@
 package org.example.motorphui.ui;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.stage.Stage;
+public class LandingPage extends javax.swing.JFrame {
 
-import java.io.IOException;
-import java.io.InputStream;
-
-
-public class LandingPage {
-    @FXML private Button employees_button;
-    @FXML private Button hr_button;
-    @FXML private Button finance_button;
-    @FXML private Button it_button;
-    @FXML private Button exit_button;
-
-    // Method for handling employee button click
-    @FXML
-    private void handleEmployeeButton() {
-        try {
-            // Load the employee_login.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/employee_login.fxml"));
-            Parent root = loader.load();  // Load the FXML file
-
-            // Create a new scene with the loaded root (employee_login.fxml)
-            Scene scene = new Scene(root);
-
-            // Get the current stage (window) and set the new scene
-            Stage stage = (Stage) employees_button.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();  // Handle the exception
-        }
+    public LandingPage() {
+        initComponents();
     }
 
-    // Method for handling human recourses button click
-    @FXML
-    private void handleHRButton() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_login.fxml"));
-            Parent root = loader.load();  // Load the FXML file
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        titleLabel = new javax.swing.JLabel();
+        descriptionLabel = new javax.swing.JLabel();
+        buttonPanel = new javax.swing.JPanel();
+        employeeloginButton = new javax.swing.JButton();
+        hrloginButton = new javax.swing.JButton();
+        financeloginButton = new javax.swing.JButton();
+        itloginButton = new javax.swing.JButton();
 
-            Scene scene = new Scene(root);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("LandingPage");
 
-            // Get the current stage (window) and set the new scene
-            Stage stage = (Stage) hr_button.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();  // Handle the exception
-        }
+        titleLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        titleLabel.setText("LandingPage");
+
+        descriptionLabel.setText("Swing-based screen generated for Apache NetBeans GUI editing.");
+
+        buttonPanel.setLayout(new java.awt.GridLayout(0, 2, 8, 8));
+        employeeloginButton.setText("Open EmployeeLogin");
+        employeeloginButton.addActionListener(evt -> openFrame(new EmployeeLogin()));
+        hrloginButton.setText("Open HRLogin");
+        hrloginButton.addActionListener(evt -> openFrame(new HRLogin()));
+        financeloginButton.setText("Open FinanceLogin");
+        financeloginButton.addActionListener(evt -> openFrame(new FinanceLogin()));
+        itloginButton.setText("Open ITLogin");
+        itloginButton.addActionListener(evt -> openFrame(new ITLogin()));
+        buttonPanel.add(employeeloginButton);
+        buttonPanel.add(hrloginButton);
+        buttonPanel.add(financeloginButton);
+        buttonPanel.add(itloginButton);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+                        .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(titleLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(descriptionLabel)
+                    .addGap(18, 18, 18)
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                    .addContainerGap())
+        );
+
+        pack();
+        setLocationRelativeTo(null);
     }
 
-    // Method for handling finance button click
-    @FXML
-    private void handleFinanceButton() {
-        try {
-            // Load the employee_login.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/finance_login.fxml"));
-            Parent root = loader.load();  // Load the FXML file
-
-            // Create a new scene with the loaded root (employee_login.fxml)
-            Scene scene = new Scene(root);
-
-            // Get the current stage (window) and set the new scene
-            Stage stage = (Stage) finance_button.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();  // Handle the exception
-        }
+    protected void openFrame(javax.swing.JFrame frame) {
+        frame.setVisible(true);
+        dispose();
     }
-    
-    // Method for handling IT button click
-    @FXML
-    private void handleITButton() {
-        try {
-            // Load the employee_login.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/it_login.fxml"));
-            Parent root = loader.load();  // Load the FXML file
 
-            // Create a new scene with the loaded root (employee_login.fxml)
-            Scene scene = new Scene(root);
-
-            // Get the current stage (window) and set the new scene
-            Stage stage = (Stage) it_button.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();  // Handle the exception
-        }
-    }
-    
-    // Method for handling the Exit button click
-    @FXML
-    private void handleExitButton() {
-        Stage stage = (Stage) exit_button.getScene().getWindow();
-        stage.close(); //closes the application
-    }
-    @FXML
-    public void initialize() {
-        try {
-            String imagePath = "/org/example/motorphui/images/LandingPage1.jpg";
-            InputStream stream = getClass().getResourceAsStream(imagePath);
-            if (stream == null) {
-                System.out.println("Image not found at: " + imagePath);
-            } else {
-                System.out.println("Image found successfully!");
-                stream.close();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JLabel titleLabel;
+    private javax.swing.JButton employeeloginButton;
+    private javax.swing.JButton hrloginButton;
+    private javax.swing.JButton financeloginButton;
+    private javax.swing.JButton itloginButton;
 }

@@ -1,34 +1,65 @@
 package org.example.motorphui.ui;
 
-import org.example.motorphui.model.LeaveRequest;
-import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
+public class LeaveManagement extends javax.swing.JFrame {
 
-import java.awt.event.MouseEvent;
+    public LeaveManagement() {
+        initComponents();
+    }
 
-public class LeaveManagement {
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+        titleLabel = new javax.swing.JLabel();
+        descriptionLabel = new javax.swing.JLabel();
+        buttonPanel = new javax.swing.JPanel();
 
-    @FXML
-    private Button approve_button, deny_button;
-    @FXML
-    private TableView<LeaveRequest> leave_table; // TableView to display the leave requests (LeaveRequest class)
 
-    // This method will be called when the Leave Management tab is opened.
-    // It should load all leave requests from the backend and display them in the TableView.
-    // Provide a method to fetch the leave requests, e.g., `getLeaveRequests()`
-    // After fetching the data, populate the TableView with the leave requests.
-    // TODO: Fetch data for leave requests and populate the TableView.
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("LeaveManagement");
 
-    // TODO: Please take note that in the LeaveID column we should be able to SELECT, when selected > approve/deny
+        titleLabel.setFont(new java.awt.Font("Segoe UI", 1, 20));
+        titleLabel.setText("LeaveManagement");
 
-    // Approve the selected leave request when the "Approve" button is clicked.
-    // The backend should be updated with the new status of the leave request (approved).
-    // TODO: Update the leave request status in the backend database (csv)
+        descriptionLabel.setText("Swing-based screen generated for Apache NetBeans GUI editing.");
 
-    // Deny the selected leave request when the "Deny" button is clicked.
-    // A dialog box should open asking for remarks, which will be stored along with the status.
-    // TODO: Update the leave request status and remarks in the backend database (csv)
+        buttonPanel.setLayout(new java.awt.GridLayout(0, 2, 8, 8));
+
+        buttonPanel.add(new javax.swing.JLabel("No navigation configured yet."));
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE)
+                        .addComponent(titleLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(descriptionLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addComponent(titleLabel)
+                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(descriptionLabel)
+                    .addGap(18, 18, 18)
+                    .addComponent(buttonPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
+                    .addContainerGap())
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    protected void openFrame(javax.swing.JFrame frame) {
+        frame.setVisible(true);
+        dispose();
+    }
+
+    private javax.swing.JPanel buttonPanel;
+    private javax.swing.JLabel descriptionLabel;
+    private javax.swing.JLabel titleLabel;
+
 }
