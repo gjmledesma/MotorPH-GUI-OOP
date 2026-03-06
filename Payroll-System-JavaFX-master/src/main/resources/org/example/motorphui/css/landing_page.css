@@ -6,8 +6,7 @@
     */
 
 .root {
-    -fx-background-image: url("../images/LandingPageBG2.png");
-    -fx-background-size: cover;
+    
 }
 
 #motorph_title {

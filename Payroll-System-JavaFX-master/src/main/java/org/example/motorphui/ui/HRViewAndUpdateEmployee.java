@@ -1,5 +1,7 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.dao.AllEmployeeDAO;
+import org.example.motorphui.model.AllEmployee;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,14 +38,14 @@ public class HRViewAndUpdateEmployee {
     @FXML private Button saveButton;
     @FXML private Button cancelButton;
 
-    private Employee employee;
+    private AllEmployee employee;
     private HREmployeeView parentController;
 
     public void setParentController(HREmployeeView controller) {
         this.parentController = controller;
     }
 
-    public void setEmployee(Employee employee) {
+    public void setEmployee(AllEmployee employee) {
         this.employee = employee;
 
         employeeNumberField.setText(employee.getEmployeeNumber());
@@ -79,7 +81,7 @@ public class HRViewAndUpdateEmployee {
     Optional<ButtonType> result = confirmAlert.showAndWait();
     if (result.isPresent() && result.get() == ButtonType.OK) {
 
-        Employee updatedEmployee = new Employee(
+        AllEmployee updatedEmployee = new AllEmployeeDAO(
             employee.getEmployeeNumber(),
             lastNameField.getText().trim(),
             firstNameField.getText().trim(),

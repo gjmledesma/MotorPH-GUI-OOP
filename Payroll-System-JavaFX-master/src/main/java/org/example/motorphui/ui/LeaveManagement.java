@@ -1,5 +1,6 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.model.LeaveRequest;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;

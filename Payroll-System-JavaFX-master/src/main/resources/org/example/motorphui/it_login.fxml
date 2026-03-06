@@ -1,27 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane id="root" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/hr_login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.HRLogin">
+<StackPane id="root" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/it_login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.ITLogin">
 
-    <VBox id="container" fx:id="container" alignment="TOP_CENTER" maxHeight="839.0" maxWidth="671.0" prefWidth="673.0" spacing="10.0" style="-fx-padding: 20;">
+    <VBox id="container" fx:id="container" alignment="TOP_CENTER" maxHeight="839.0" maxWidth="671.0" spacing="30.0" style="-fx-padding: 20;">
+
+        <!-- Logo -->
+        <ImageView fitWidth="200.0" preserveRatio="true">
+            <image>
+                <Image url="@images/MotorPH.png" />
+            </image>
+        </ImageView>
 
         <!-- Title -->
         <Label id="welcomeback_label" fx:id="welcomeback_label" text="Welcome Back!">
             <font>
                 <Font name="Century Gothic Bold" size="36.0" />
             </font>
-         <padding>
-            <Insets top="50.0" />
-         </padding>
         </Label>
 
         <!-- Form fields aligned to left with spacing (removed Employee ID section) -->
@@ -40,9 +45,6 @@
             <CheckBox fx:id="show_password_check" text="Show Password">
                 <font><Font name="Century Gothic" size="14.0" /></font>
             </CheckBox>
-         <VBox.margin>
-            <Insets />
-         </VBox.margin>
         </VBox>
 
         <!-- Login & Back -->
@@ -53,9 +55,6 @@
             <Label id="back_label" fx:id="back_label" onMouseClicked="#handleBackClick" text="Back">
                 <font><Font name="Century Gothic" size="16.0" /></font>
             </Label>
-         <VBox.margin>
-            <Insets top="40.0" />
-         </VBox.margin>
         </VBox>
 
         <!-- Footer -->
@@ -66,9 +65,6 @@
             <Label id="contact_label" fx:id="contact_label" text="Contact: corporate@motorph.com">
                 <font><Font name="Century Gothic" size="18.0" /></font>
             </Label>
-         <VBox.margin>
-            <Insets top="50.0" />
-         </VBox.margin>
         </VBox>
 
     </VBox>

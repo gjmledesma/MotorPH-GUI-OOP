@@ -6,12 +6,12 @@
     <groupId>org.example</groupId>
     <artifactId>MotorPHUI</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>TeamDevNest</name>
+    <name>MotorPHSystemOOPF</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.2</junit.version>
-        <javafx.version>22.0.1</javafx.version>
+        <javafx.version>23.0.1</javafx.version>
     </properties>
 
     <dependencies>
@@ -48,12 +48,18 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.truthbean</groupId>
+            <artifactId>debbie-javafx</artifactId>
+            <version>0.5.4-RELEASE</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 
     <repositories>
         <repository>
             <id>javafx</id>
-            <url>https://maven.openjfx.io</url>
+            <url>https://download2.gluonhq.com/openjfx/23.0.1/</url>
         </repository>
     </repositories>
 
@@ -76,9 +82,8 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>org.example.motorphui.MainApplication</mainClass>
-                            
-                            <modulePath>C:\Program Files\javafx-sdk-22\lib</modulePath>
+                            <mainClass>org.example.motorphui.ui.MainApplication</mainClass>
+                            <modulePath>/Users/gabrielledesma/javafx-sdk-23.0.1/lib</modulePath>
                             <addModules>javafx.controls,javafx.fxml</addModules>
                         </configuration>
                     </execution>

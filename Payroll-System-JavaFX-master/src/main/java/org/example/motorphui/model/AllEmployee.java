@@ -1,31 +1,33 @@
-package org.example.motorphui;
+package org.example.motorphui.model;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class Employee {
-    private final StringProperty employeeNumber;
-    private final StringProperty lastName;
-    private final StringProperty firstName;
-    private final StringProperty birthday;
-    private final StringProperty address;
-    private final StringProperty phoneNumber;
-    private final StringProperty sss;
-    private final StringProperty philHealth;
-    private final StringProperty tin;
-    private final StringProperty pagIbig;
-    private final StringProperty status;
-    private final StringProperty position;
-    private final StringProperty immediateSupervisor;
-    private final StringProperty basicSalary;  // Added back
-    private final StringProperty riceSubsidy;
-    private final StringProperty phoneAllowance;
-    private final StringProperty clothingAllowance;
-    private final StringProperty grossSemiMonthlyRate;
-    private final StringProperty hourlyRate;
+public abstract class AllEmployee {
+    protected final StringProperty employeeNumber;
+    protected final StringProperty lastName;
+    protected final StringProperty firstName;
+    protected final StringProperty birthday;
+    protected final StringProperty address;
+    protected final StringProperty phoneNumber;
+    protected final StringProperty sss;
+    protected final StringProperty philHealth;
+    protected final StringProperty tin;
+    protected final StringProperty pagIbig;
+    protected final StringProperty status;
+    protected final StringProperty position;
+    protected final StringProperty immediateSupervisor;
+    protected final StringProperty basicSalary;  // Added back
+    protected final StringProperty riceSubsidy;
+    protected final StringProperty phoneAllowance;
+    protected final StringProperty clothingAllowance;
+    protected final StringProperty grossSemiMonthlyRate;
+    protected final StringProperty hourlyRate;
+//    protected final StringProperty logonTime;
+//    protected final StringProperty logoffTime;
 
     // Constructor
-    public Employee(String employeeNumber, String lastName, String firstName, String birthday, String address,
+    public AllEmployee(String employeeNumber, String lastName, String firstName, String birthday, String address,
                     String phoneNumber, String sss, String philHealth, String tin, String pagIbig, String status,
                     String position, String immediateSupervisor, String basicSalary, String riceSubsidy,
                     String phoneAllowance, String clothingAllowance, String grossSemiMonthlyRate, String hourlyRate) {
@@ -48,6 +50,8 @@ public class Employee {
         this.clothingAllowance = new SimpleStringProperty(clothingAllowance);
         this.grossSemiMonthlyRate = new SimpleStringProperty(grossSemiMonthlyRate);
         this.hourlyRate = new SimpleStringProperty(hourlyRate);
+//        this.logonTime = new SimpleStringProperty(logonTime);
+//        this.logoffTime = new SimpleStringProperty(logoffTime);
     }
 
     // Getters and Setters for all properties
@@ -70,6 +74,8 @@ public class Employee {
     public StringProperty clothingAllowanceProperty() { return clothingAllowance; }
     public StringProperty grossSemiMonthlyRateProperty() { return grossSemiMonthlyRate; }
     public StringProperty hourlyRateProperty() { return hourlyRate; }
+//    public StringProperty logonTimeProperty() { return logonTime; }
+//    public StringProperty logoffTimeProperty() { return logoffTime; }
 
     // Getters for the fields
     public String getEmployeeNumber() { return employeeNumber.get(); }
@@ -91,7 +97,9 @@ public class Employee {
     public String getGrossSemiMonthlyRate() { return grossSemiMonthlyRate.get(); }
     public String getHourlyRate() { return hourlyRate.get(); }
     public String getBasicSalary() { return basicSalary.get(); }  // Getter for basicSalary
-
+//    public String getlogonTime() { return logonTime.get(); }
+//    public String getlogoffTime() { return logoffTime.get(); }
+    
     // Setters for all properties
     public void setEmployeeNumber(String employeeNumber) { this.employeeNumber.set(employeeNumber); }
     public void setLastName(String lastName) { this.lastName.set(lastName); }
@@ -109,6 +117,9 @@ public class Employee {
     public void setRiceSubsidy(String riceSubsidy) { this.riceSubsidy.set(riceSubsidy); }
     public void setPhoneAllowance(String phoneAllowance) { this.phoneAllowance.set(phoneAllowance); }
     public void setClothingAllowance(String clothingAllowance) { this.clothingAllowance.set(clothingAllowance); }
+    public void setGrossSemiMonthlyRate(String grossSemiMonthlyRate) { this.grossSemiMonthlyRate.set(grossSemiMonthlyRate); }
     public void setHourlyRate(String hourlyRate) { this.hourlyRate.set(hourlyRate); }
     public void setBasicSalary(String basicSalary) { this.basicSalary.set(basicSalary); }  // Setter for basicSalary
+//    public void setlogonTime(String logonTime) { this.logonTime.set(logonTime); }
+//    public void setlogoffTime(String logoffTime) { this.logoffTime.set(logoffTime); }
 }

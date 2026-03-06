@@ -1,5 +1,7 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.dao.AllEmployeeDAO;
+import org.example.motorphui.model.AllEmployee;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,15 +16,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-
 public class HRPayroll {
 
     @FXML
-    private TableView<Employee> emp_table;
+    private TableView<AllEmployee> emp_table;
     @FXML
-    private TableColumn<Employee, String> empNumColumn, lastNameColumn, firstNameColumn, sssColumn, philHealthColumn, tinColumn, pagIbigColumn;
+    private TableColumn<AllEmployee, String> empNumColumn, lastNameColumn, firstNameColumn, sssColumn, philHealthColumn, tinColumn, pagIbigColumn;
     @FXML
-    private final ObservableList<Employee> employeeData = FXCollections.observableArrayList();
+    private final ObservableList<AllEmployee> employeeData = FXCollections.observableArrayList();
 
     public void initialize() {
         empNumColumn.setCellValueFactory(cellData -> cellData.getValue().employeeNumberProperty());
@@ -67,7 +68,7 @@ public class HRPayroll {
                     String grossSemiMonthlyRate = data[17];
                     String hourlyRate = data[18];
 
-                    Employee employee = new Employee(
+                    AllEmployee employee = new AllEmployeeDAO(
                             empNumber,          // employeeNumber
                             lastName,           // lastName
                             firstName,         // firstName
@@ -101,9 +102,9 @@ public class HRPayroll {
         }
     }
 
-    private void generatePayrollForEmployee(Employee employee) {
+    private void generatePayrollForEmployee(AllEmployee employee) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("hr_payslip.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_payslip.fxml"));
             Parent root = loader.load();
 
             HRPayslip controller = loader.getController();
@@ -120,7 +121,7 @@ public class HRPayroll {
 
     @FXML
     private void onGeneratePayroll() {
-        Employee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
+        AllEmployee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
 
         if (selectedEmployee != null) {
             generatePayrollForEmployee(selectedEmployee);

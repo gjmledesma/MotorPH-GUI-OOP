@@ -1,5 +1,6 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.model.AllEmployee;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -29,7 +30,7 @@ public class EmployeeProfile {
     @FXML private Label clothingAllowanceLabel;
     @FXML private Label pagibigLabel;
 
-    public void setEmployeeData(Employee employee) {
+    public void setEmployeeData(AllEmployee employee) {
         nameLabel.setText(employee.getFirstName() + " " + employee.getLastName());
         positionLabel.setText(employee.getPosition());
         statusLabel.setText(employee.getStatus());

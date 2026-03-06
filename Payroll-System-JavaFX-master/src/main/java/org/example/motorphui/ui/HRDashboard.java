@@ -1,4 +1,4 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,31 +21,31 @@ public class HRDashboard {
 
     @FXML
     public void initialize() {
-        loadView("hr_employee_view.fxml");
+        loadView("/org/example/motorphui/hr_employee_view.fxml");
         setActiveButton(emp_button);
     }
 
     @FXML
     private void onEmployeesClicked() {
-        loadView("hr_employee_view.fxml");
+        loadView("/org/example/motorphui/hr_employee_view.fxml");
         setActiveButton(emp_button);
     }
 
     @FXML
     private void onPayrollClicked() {
-        loadView("hr_payroll.fxml");
+        loadView("/org/example/motorphui/hr_payroll.fxml");
         setActiveButton(payroll_button);
     }
 
     @FXML
     private void onLeaveClicked() {
-        loadView("leave_management.fxml");
+        loadView("/org/example/motorphui/leave_management.fxml");
         setActiveButton(leave_button);
     }
 
     @FXML
     private void onAttendanceClicked() {
-        loadView("hr_attendance.fxml");
+        loadView("/org/example/motorphui/hr_attendance.fxml");
         setActiveButton(attendance_button);
     }
 
@@ -80,7 +80,7 @@ public class HRDashboard {
     @FXML
     private void onLogoutClicked() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("landing_page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/landing_page.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) logout_button.getScene().getWindow();

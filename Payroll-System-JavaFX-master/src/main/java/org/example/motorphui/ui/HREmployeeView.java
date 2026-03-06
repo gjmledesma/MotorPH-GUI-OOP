@@ -1,5 +1,10 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.dao.AllEmployeeDAO;
+import org.example.motorphui.model.AllEmployee;
+import org.example.motorphui.service.AuthenticationService;
+import org.example.motorphui.service.SalaryTaxCalculatorService;
+import org.example.motorphui.service.AttendanceService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -17,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Optional;
 
 public class HREmployeeView {
@@ -24,7 +30,7 @@ public class HREmployeeView {
     @FXML
     private AnchorPane root;
     @FXML
-    private TableView<Employee> emp_table;
+    private TableView<AllEmployee> emp_table;
     @FXML
     private Label emp_info_label;
     @FXML
@@ -36,47 +42,47 @@ public class HREmployeeView {
 
     // Declare columns for each property in Employee class
     @FXML
-    private TableColumn<Employee, String> empNumColumn;
+    private TableColumn<AllEmployee, String> empNumColumn;
     @FXML
-    private TableColumn<Employee, String> lastNameColumn;
+    private TableColumn<AllEmployee, String> lastNameColumn;
     @FXML
-    private TableColumn<Employee, String> firstNameColumn;
+    private TableColumn<AllEmployee, String> firstNameColumn;
     @FXML
-    private TableColumn<Employee, String> birthdayColumn;
+    private TableColumn<AllEmployee, String> birthdayColumn;
     @FXML
-    private TableColumn<Employee, String> addressColumn;
+    private TableColumn<AllEmployee, String> addressColumn;
     @FXML
-    private TableColumn<Employee, String> phoneNumberColumn;
+    private TableColumn<AllEmployee, String> phoneNumberColumn;
     @FXML
-    private TableColumn<Employee, String> sssColumn;
+    private TableColumn<AllEmployee, String> sssColumn;
     @FXML
-    private TableColumn<Employee, String> philHealthColumn;
+    private TableColumn<AllEmployee, String> philHealthColumn;
     @FXML
-    private TableColumn<Employee, String> tinColumn;
+    private TableColumn<AllEmployee, String> tinColumn;
     @FXML
-    private TableColumn<Employee, String> pagIbigColumn;
+    private TableColumn<AllEmployee, String> pagIbigColumn;
     @FXML
-    private TableColumn<Employee, String> statusColumn;
+    private TableColumn<AllEmployee, String> statusColumn;
     @FXML
-    private TableColumn<Employee, String> positionColumn;
+    private TableColumn<AllEmployee, String> positionColumn;
     @FXML
-    private TableColumn<Employee, String> supervisorColumn;
+    private TableColumn<AllEmployee, String> supervisorColumn;
     @FXML
-    private TableColumn<Employee, String> basicSalaryColumn;
+    private TableColumn<AllEmployee, String> basicSalaryColumn;
     @FXML
-    private TableColumn<Employee, String> riceSubsidyColumn;
+    private TableColumn<AllEmployee, String> riceSubsidyColumn;
     @FXML
-    private TableColumn<Employee, String> phoneAllowanceColumn;
+    private TableColumn<AllEmployee, String> phoneAllowanceColumn;
     @FXML
-    private TableColumn<Employee, String> clothingAllowanceColumn;
+    private TableColumn<AllEmployee, String> clothingAllowanceColumn;
     @FXML
-    private TableColumn<Employee, String> grossSemiMonthlyColumn;
+    private TableColumn<AllEmployee, String> grossSemiMonthlyColumn;
     @FXML
-    private TableColumn<Employee, String> hourlyRateColumn;
+    private TableColumn<AllEmployee, String> hourlyRateColumn;
 
-    private final ObservableList<Employee> employeeList = FXCollections.observableArrayList();
+    private final ObservableList<AllEmployee> employeeList = FXCollections.observableArrayList();
 
-    private static final String EMPLOYEE_DATA_FILE = "src/main/resources/org/example/motorphui/data/motorph_employee_data.csv";
+    private static final String EMPLOYEE_DATA_FILE = "/org/example/motorphui/data/motorph_employee_data.csv";
 
     @FXML
     public void initialize() {
@@ -112,13 +118,13 @@ public class HREmployeeView {
 
     private void loadEmployeesFromCSV() {
         employeeList.clear();
-        try (BufferedReader reader = new BufferedReader(new FileReader(EMPLOYEE_DATA_FILE))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(EMPLOYEE_DATA_FILE)))) {
             reader.readLine(); // Skip header
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",", -1);
                 if (data.length == 19) {
-                    Employee emp = new Employee(
+                    AllEmployee emp = new AllEmployeeDAO(
                             data[0], // employeeNumber
                             data[1], // lastName
                             data[2], // firstName
@@ -153,7 +159,7 @@ public class HREmployeeView {
         }
     }
 
-    public void updateEmployee(Employee updatedEmployee) {
+    public void updateEmployee(AllEmployee updatedEmployee) {
         for (int i = 0; i < employeeList.size(); i++) {
             if (employeeList.get(i).getEmployeeNumber().equals(updatedEmployee.getEmployeeNumber())) {
                 employeeList.set(i, updatedEmployee);
@@ -166,10 +172,10 @@ public class HREmployeeView {
 
     @FXML
     public void handleViewAndUpdateButton() {
-        Employee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
+        AllEmployee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
         if (selectedEmployee != null) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("hr_view_and_update_employee.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_view_and_update_employee.fxml"));
                 Parent parent = loader.load();
 
                 HRViewAndUpdateEmployee controller = loader.getController();
@@ -196,7 +202,7 @@ public class HREmployeeView {
 
     @FXML
     private void handleDeleteEmployeeButton() {
-        Employee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
+        AllEmployee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
         if (selectedEmployee != null) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("Confirm Deletion");
@@ -206,7 +212,7 @@ public class HREmployeeView {
             Optional<ButtonType> result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 employeeList.remove(selectedEmployee);
-                saveEmployeesToCSV("src/main/resources/org/example/motorphui/data/motorph_employee_data.csv");
+                saveEmployeesToCSV("/org/example/motorphui/data/motorph_employee_data.csv");
                 refreshTable();
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
                 successAlert.setTitle("Deletion Successful");
@@ -231,7 +237,7 @@ public class HREmployeeView {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
             writer.write("Employee #,Last Name,First Name,Birthday,Address,Phone Number,SSS #,PhilHealth #,TIN #,Pag-Ibig #,Status,Position,Immediate Supervisor,Basic Salary,Rice Subsidy,Phone Allowance,Clothing Allowance,Gross Semi-monthly Rate,Hourly Rate\n");
 
-            for (Employee emp : employeeList) {
+            for (AllEmployee emp : employeeList) {
                 writer.write(String.join(",",
                         emp.getEmployeeNumber(),
                         emp.getLastName(),
@@ -265,7 +271,7 @@ public class HREmployeeView {
         }
     }
 
-    public void addEmployee(Employee employee) {
+    public void addEmployee(AllEmployee employee) {
         employeeList.add(employee);
         saveEmployeesToCSV(EMPLOYEE_DATA_FILE);
         refreshTable();

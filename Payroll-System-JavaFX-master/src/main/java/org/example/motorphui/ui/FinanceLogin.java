@@ -1,5 +1,6 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.service.AuthenticationService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,18 +10,16 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class EmployeeLogin {
-    @FXML
-    private TextField employeeid_field;
-
-    @FXML
-    private TextField username_field;
+public class FinanceLogin extends AuthenticationService {
 
     @FXML
     private Button login_button;
 
     @FXML
     private Label back_label;
+
+    @FXML
+    private TextField username_field;
 
     @FXML
     private PasswordField password_field;
@@ -30,9 +29,6 @@ public class EmployeeLogin {
 
     @FXML
     private CheckBox show_password_check;
-
-    //@FXML
-    //private Label errorMessage;
 
     @FXML
     private void initialize() {
@@ -60,25 +56,20 @@ public class EmployeeLogin {
 
     @FXML
     private void handleLoginButton(ActionEvent event) {
-        String empId = employeeid_field.getText();
         String username = username_field.getText();
         String password = password_field.getText();
 
-        if (empId.trim().isEmpty() || username.trim().isEmpty() || password.trim().isEmpty()) {
+        if (username.trim().isEmpty() || password.trim().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Login Failed", "All fields are required.");
             return;
         }
 
         // Authenticate user
-        if (Authentication.authenticate(empId, username, password)) {
-            Employee employee = Authentication.getEmployeeData(empId);
+        if (AuthenticationService.authenticateHR(username, password)) {
 
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("employee_dashboard.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_dashboard.fxml"));
                 Parent root = loader.load();
-
-                EmployeeDashboard dashboardController = loader.getController();
-                dashboardController.loadProfile(employee);
 
                 Stage stage = (Stage) login_button.getScene().getWindow();
                 Scene scene = new Scene(root);
@@ -112,7 +103,7 @@ public class EmployeeLogin {
     @FXML
     private void handleBackClick(MouseEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("landing_page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/landing_page.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) back_label.getScene().getWindow();

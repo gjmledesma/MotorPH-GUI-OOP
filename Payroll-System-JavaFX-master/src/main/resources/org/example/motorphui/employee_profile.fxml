@@ -9,18 +9,18 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="1024.0" prefWidth="1140.0" stylesheets="@css/employee_profile.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.EmployeeProfile">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" stylesheets="@css/employee_profile.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.EmployeeProfile">
    <children>
       <Label fx:id="profile_label" layoutX="40.0" layoutY="35.0" text="Profile">
          <font>
             <Font name="Poppins Bold" size="36.0" />
          </font>
       </Label>
-      <VBox fx:id="profileBox" layoutX="50.0" layoutY="116.0" prefHeight="838.0" prefWidth="350.0" stylesheets="@css/employee_profile.css">
+      <VBox fx:id="profileBox" layoutX="36.0" layoutY="85.0" prefHeight="579.0" prefWidth="350.0" stylesheets="@css/employee_profile.css">
          <children>
-            <ImageView fx:id="profileView" fitHeight="180.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fx:id="profileView" fitHeight="73.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true">
                <VBox.margin>
-                  <Insets left="100.0" top="40.0" />
+                  <Insets left="139.0" top="10.0" />
                </VBox.margin>
                <image>
                   <Image url="@images/Profile.png" />
@@ -46,7 +46,7 @@
             </Label>
             <Label prefHeight="23.0" prefWidth="321.0" text="Supervisor" textFill="#54555d">
                <VBox.margin>
-                  <Insets top="60.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
                <font>
                   <Font name="Poppins Regular" size="15.0" />
@@ -147,7 +147,7 @@
                   <Insets left="40.0" />
                </padding>
                <VBox.margin>
-                  <Insets top="50.0" />
+                  <Insets top="10.0" />
                </VBox.margin>
             </Label>
             <Label fx:id="basicSalaryLabel" layoutX="10.0" layoutY="508.0" prefHeight="23.0" prefWidth="321.0" text="9000">
@@ -166,7 +166,7 @@
                   <Insets left="40.0" />
                </padding>
                <VBox.margin>
-                  <Insets top="10.0" />
+                  <Insets top="5.0" />
                </VBox.margin>
             </Label>
             <Label fx:id="hourlyRateLabel" layoutX="10.0" layoutY="554.0" prefHeight="23.0" prefWidth="321.0" text="535.71">
@@ -179,7 +179,7 @@
             </Label>
          </children>
       </VBox>
-      <VBox fx:id="leaveApprovalBox" layoutX="435.0" layoutY="116.0" prefHeight="383.0" prefWidth="646.0" stylesheets="@css/employee_profile.css">
+      <VBox fx:id="leaveApprovalBox" layoutX="406.0" layoutY="87.0" prefHeight="247.0" prefWidth="475.0" stylesheets="@css/employee_profile.css">
          <children>
             <Label text="Leave Approval">
                <VBox.margin>
@@ -189,19 +189,19 @@
                   <Font name="Poppins Bold" size="24.0" />
                </font>
             </Label>
-            <HBox fx:id="titleBox" prefHeight="50.0" prefWidth="200.0">
+            <HBox fx:id="titleBox" prefHeight="50.0" prefWidth="565.0">
                <children>
-                  <Label prefHeight="50.0" text="Leave Type" textFill="#54555d">
+                  <Label prefHeight="50.0" prefWidth="109.0" text="Leave Type" textFill="#54555d">
                      <HBox.margin>
-                        <Insets left="40.0" right="140.0" />
+                        <Insets left="40.0" right="10.0" />
                      </HBox.margin>
                      <font>
                         <Font name="Poppins Regular" size="20.0" />
                      </font>
                   </Label>
-                  <Label prefHeight="50.0" text="Duration" textFill="#54555d">
+                  <Label prefHeight="50.0" prefWidth="86.0" text="Duration" textFill="#54555d">
                      <HBox.margin>
-                        <Insets right="145.0" />
+                        <Insets left="50.0" right="50.0" />
                      </HBox.margin>
                      <font>
                         <Font name="Poppins Regular" size="20.0" />
@@ -238,7 +238,7 @@
             </HBox>
          </children>
       </VBox>
-      <VBox fx:id="taxAndBenefitsBox" layoutX="435.0" layoutY="523.0" prefHeight="431.0" prefWidth="646.0">
+      <VBox fx:id="taxAndBenefitsBox" layoutX="409.0" layoutY="350.0" prefHeight="312.0" prefWidth="469.0">
          <children>
             <Label text="Tax &amp; Benefits">
                <font>

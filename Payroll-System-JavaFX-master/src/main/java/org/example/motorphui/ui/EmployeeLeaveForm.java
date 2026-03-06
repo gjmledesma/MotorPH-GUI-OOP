@@ -1,4 +1,4 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
 public class EmployeeLeaveForm {
 }

@@ -1,5 +1,7 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.dao.AllEmployeeDAO;
+import org.example.motorphui.model.AllEmployee;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -20,7 +22,7 @@ public class AddEmployee {
     @FXML
     private Button cancelButton;
 
-    private final String employeeDataFile = "src/main/resources/org/example/motorphui/data/motorph_employee_data.csv";
+    private final String employeeDataFile = "/src/main/resources/org/example/motorphui/data/motorph_employee_data.csv";
     private HREmployeeView parentController;
 
     public void SetParentController(HREmployeeView parentController) {
@@ -58,7 +60,7 @@ public class AddEmployee {
         Optional<ButtonType> result = confirmAlert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
 
-            Employee newEmployee = new Employee(
+            AllEmployee newEmployee = new AllEmployeeDAO(
                     employeeNumberField.getText().trim(),
                     lastNameField.getText().trim(),
                     firstNameField.getText().trim(),

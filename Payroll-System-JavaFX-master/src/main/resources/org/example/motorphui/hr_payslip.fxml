@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="root" prefHeight="574.0" prefWidth="438.0" stylesheets="@css/payslip.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.HRPayslip">
+<AnchorPane fx:id="root" prefHeight="574.0" prefWidth="438.0" stylesheets="@css/payslip.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.HRPayslip">
    <children>
       <Label fx:id="empNumLabel" alignment="TOP_LEFT" layoutX="22.0" layoutY="74.0" prefHeight="18.0" prefWidth="230.0" text="empNum" wrapText="true">
          <font>

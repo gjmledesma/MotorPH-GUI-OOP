@@ -1,5 +1,6 @@
-package org.example.motorphui;
+package org.example.motorphui.ui;
 
+import org.example.motorphui.service.AuthenticationService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,7 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class HRLogin {
+public class ITLogin extends AuthenticationService {
 
     @FXML
     private Button login_button;
@@ -64,10 +65,10 @@ public class HRLogin {
         }
 
         // Authenticate user
-        if (Authentication.authenticateHR(username, password)) {
+        if (AuthenticationService.authenticateHR(username, password)) {
 
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("hr_dashboard.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_dashboard.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) login_button.getScene().getWindow();
@@ -102,7 +103,7 @@ public class HRLogin {
     @FXML
     private void handleBackClick(MouseEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("landing_page.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/landing_page.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) back_label.getScene().getWindow();
