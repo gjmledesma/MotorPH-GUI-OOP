@@ -1,6 +1,6 @@
 package org.example.motorphui.ui;
 
-import org.example.motorphui.service.AuthenticationService;
+import org.example.motorphui.dao.AuthenticationDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class FinanceLogin extends AuthenticationService {
+public class FinanceLogin extends AuthenticationDAO {
 
     @FXML
     private Button login_button;
@@ -65,7 +65,7 @@ public class FinanceLogin extends AuthenticationService {
         }
 
         // Authenticate user
-        if (AuthenticationService.authenticateHR(username, password)) {
+        if (AuthenticationDAO.authenticateHR(username, password)) {
 
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_dashboard.fxml"));
@@ -74,11 +74,11 @@ public class FinanceLogin extends AuthenticationService {
                 Stage stage = (Stage) login_button.getScene().getWindow();
                 Scene scene = new Scene(root);
 
-                stage.setMinWidth(1440);
-                stage.setMinHeight(1024);
+                stage.setMinWidth(1200);
+                stage.setMinHeight(700);
 
-                stage.setWidth(1440);
-                stage.setHeight(1024);
+                stage.setWidth(1200);
+                stage.setHeight(700);
 
                 stage.setScene(scene);
                 stage.show();

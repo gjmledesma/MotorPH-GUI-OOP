@@ -1,10 +1,7 @@
 package org.example.motorphui.ui;
 
-import org.example.motorphui.dao.AllEmployeeDAO;
+import org.example.motorphui.model.AllEmployeePublic;
 import org.example.motorphui.model.AllEmployee;
-import org.example.motorphui.service.AuthenticationService;
-import org.example.motorphui.service.SalaryTaxCalculatorService;
-import org.example.motorphui.service.AttendanceService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,228 +11,146 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 public class HREmployeeView {
 
-    @FXML
-    private AnchorPane root;
-    @FXML
-    private TableView<AllEmployee> emp_table;
-    @FXML
-    private Label emp_info_label;
-    @FXML
-    private Button viewandupdate_button;
-    @FXML
-    private Button addemp_button;
-    @FXML
-    private Button deleteemp_button;
+    @FXML private AnchorPane root;
+    @FXML private TableView<AllEmployee> emp_table;
+    @FXML private Label emp_info_label;
+    @FXML private Button viewandupdate_button;
+    @FXML private Button addemp_button;
+    @FXML private Button deleteemp_button;
 
-    // Declare columns for each property in Employee class
-    @FXML
-    private TableColumn<AllEmployee, String> empNumColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> lastNameColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> firstNameColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> birthdayColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> addressColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> phoneNumberColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> sssColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> philHealthColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> tinColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> pagIbigColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> statusColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> positionColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> supervisorColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> basicSalaryColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> riceSubsidyColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> phoneAllowanceColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> clothingAllowanceColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> grossSemiMonthlyColumn;
-    @FXML
-    private TableColumn<AllEmployee, String> hourlyRateColumn;
+    @FXML private TableColumn<AllEmployee, String> empNumColumn;
+    @FXML private TableColumn<AllEmployee, String> lastNameColumn;
+    @FXML private TableColumn<AllEmployee, String> firstNameColumn;
+    @FXML private TableColumn<AllEmployee, String> birthdayColumn;
+    @FXML private TableColumn<AllEmployee, String> addressColumn;
+    @FXML private TableColumn<AllEmployee, String> phoneNumberColumn;
+    @FXML private TableColumn<AllEmployee, String> sssColumn;
+    @FXML private TableColumn<AllEmployee, String> philHealthColumn;
+    @FXML private TableColumn<AllEmployee, String> tinColumn;
+    @FXML private TableColumn<AllEmployee, String> pagIbigColumn;
+    @FXML private TableColumn<AllEmployee, String> statusColumn;
+    @FXML private TableColumn<AllEmployee, String> positionColumn;
+    @FXML private TableColumn<AllEmployee, String> supervisorColumn;
+    @FXML private TableColumn<AllEmployee, String> basicSalaryColumn;
+    @FXML private TableColumn<AllEmployee, String> riceSubsidyColumn;
+    @FXML private TableColumn<AllEmployee, String> phoneAllowanceColumn;
+    @FXML private TableColumn<AllEmployee, String> clothingAllowanceColumn;
+    @FXML private TableColumn<AllEmployee, String> grossSemiMonthlyColumn;
+    @FXML private TableColumn<AllEmployee, String> hourlyRateColumn;
 
     private final ObservableList<AllEmployee> employeeList = FXCollections.observableArrayList();
 
-    private static final String EMPLOYEE_DATA_FILE = "/org/example/motorphui/data/motorph_employee_data.csv";
+    // Classpath path — used for reading only
+    public static final String EMPLOYEE_DATA_FILE =
+            "/org/example/motorphui/data/motorph_employee_data.csv";
+
+    private static final String CSV_HEADER =
+            "Employee #,Last Name,First Name,Birthday,Address,Phone Number," +
+            "SSS #,PhilHealth #,TIN #,Pag-Ibig #,Status,Position," +
+            "Immediate Supervisor,Basic Salary,Rice Subsidy,Phone Allowance," +
+            "Clothing Allowance,Gross Semi-monthly Rate,Hourly Rate";
+
+    // ── Init ──────────────────────────────────────────────────────────────────
 
     @FXML
     public void initialize() {
-        root.setMinWidth(1440);
-        root.setMinHeight(1024);
-        emp_table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        // ── Horizontal scroll: UNCONSTRAINED so all 19 columns are reachable ──
+        emp_table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
-        // Set column cell value factories for each property in the Employee class
-        empNumColumn.setCellValueFactory(new PropertyValueFactory<>("employeeNumber"));
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-        birthdayColumn.setCellValueFactory(new PropertyValueFactory<>("birthday"));
-        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
-        phoneNumberColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
-        sssColumn.setCellValueFactory(new PropertyValueFactory<>("sss"));
-        philHealthColumn.setCellValueFactory(new PropertyValueFactory<>("philHealth"));
-        tinColumn.setCellValueFactory(new PropertyValueFactory<>("tin"));
-        pagIbigColumn.setCellValueFactory(new PropertyValueFactory<>("pagIbig"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-        positionColumn.setCellValueFactory(new PropertyValueFactory<>("position"));
-        supervisorColumn.setCellValueFactory(new PropertyValueFactory<>("immediateSupervisor"));
-        basicSalaryColumn.setCellValueFactory(new PropertyValueFactory<>("basicSalary"));
-        riceSubsidyColumn.setCellValueFactory(new PropertyValueFactory<>("riceSubsidy"));
-        phoneAllowanceColumn.setCellValueFactory(new PropertyValueFactory<>("phoneAllowance"));
+        empNumColumn         .setCellValueFactory(new PropertyValueFactory<>("employeeNumber"));
+        lastNameColumn       .setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        firstNameColumn      .setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        birthdayColumn       .setCellValueFactory(new PropertyValueFactory<>("birthday"));
+        addressColumn        .setCellValueFactory(new PropertyValueFactory<>("address"));
+        phoneNumberColumn    .setCellValueFactory(new PropertyValueFactory<>("phoneNumber"));
+        sssColumn            .setCellValueFactory(new PropertyValueFactory<>("sss"));
+        philHealthColumn     .setCellValueFactory(new PropertyValueFactory<>("philHealth"));
+        tinColumn            .setCellValueFactory(new PropertyValueFactory<>("tin"));
+        pagIbigColumn        .setCellValueFactory(new PropertyValueFactory<>("pagIbig"));
+        statusColumn         .setCellValueFactory(new PropertyValueFactory<>("status"));
+        positionColumn       .setCellValueFactory(new PropertyValueFactory<>("position"));
+        supervisorColumn     .setCellValueFactory(new PropertyValueFactory<>("immediateSupervisor"));
+        basicSalaryColumn    .setCellValueFactory(new PropertyValueFactory<>("basicSalary"));
+        riceSubsidyColumn    .setCellValueFactory(new PropertyValueFactory<>("riceSubsidy"));
+        phoneAllowanceColumn .setCellValueFactory(new PropertyValueFactory<>("phoneAllowance"));
         clothingAllowanceColumn.setCellValueFactory(new PropertyValueFactory<>("clothingAllowance"));
         grossSemiMonthlyColumn.setCellValueFactory(new PropertyValueFactory<>("grossSemiMonthlyRate"));
-        hourlyRateColumn.setCellValueFactory(new PropertyValueFactory<>("hourlyRate"));
+        hourlyRateColumn     .setCellValueFactory(new PropertyValueFactory<>("hourlyRate"));
 
-
-        // Load employees from CSV
         loadEmployeesFromCSV();
     }
+
+    // ── CSV read ──────────────────────────────────────────────────────────────
 
     private void loadEmployeesFromCSV() {
         employeeList.clear();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(EMPLOYEE_DATA_FILE)))) {
-            reader.readLine(); // Skip header
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
+                getClass().getResourceAsStream(EMPLOYEE_DATA_FILE),
+                StandardCharsets.UTF_8))) {
+
+            reader.readLine(); // skip header
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",", -1);
-                if (data.length == 19) {
-                    AllEmployee emp = new AllEmployeeDAO(
-                            data[0], // employeeNumber
-                            data[1], // lastName
-                            data[2], // firstName
-                            data[3], // birthday
-                            data[4], // address
-                            data[5], // phoneNumber
-                            data[6], // sss
-                            data[7], // philHealth
-                            data[8], // tin
-                            data[9], // pagIbig
-                            data[10], // status
-                            data[11], // position
-                            data[12], // immediateSupervisor
-                            data[13], // basicSalary
-                            data[14], // riceSubsidy
-                            data[15], // phoneAllowance
-                            data[16], // clothingAllowance
-                            data[17], // grossSemiMonthlyRate
-                            data[18]  // hourlyRate
-                    );
-                    employeeList.add(emp);
+                if (line.isBlank()) continue;
+                String[] d = line.split(",", -1);
+                if (d.length == 19) {
+                    employeeList.add(new AllEmployeePublic(
+                            d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8],
+                            d[9], d[10], d[11], d[12], d[13], d[14], d[15], d[16],
+                            d[17], d[18]));
                 }
             }
             emp_table.setItems(employeeList);
+
         } catch (IOException e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Load Error");
-            alert.setHeaderText("Failed to load employee data.");
-            alert.setContentText("An error occurred while loading the employee data.");
-            alert.showAndWait();
+            showErrorAlert("Load Error", "Failed to load employee data.", e.getMessage());
         }
     }
 
-    public void updateEmployee(AllEmployee updatedEmployee) {
-        for (int i = 0; i < employeeList.size(); i++) {
-            if (employeeList.get(i).getEmployeeNumber().equals(updatedEmployee.getEmployeeNumber())) {
-                employeeList.set(i, updatedEmployee);
-                break;
+    // ── CSV write — THE FIX ───────────────────────────────────────────────────
+
+    /**
+     * Resolves the classpath resource path to a real on-disk {@link File}
+     * so that {@link FileWriter} can write to it.
+     *
+     * Root cause of the original bug: {@code new FileWriter(classpathString)}
+     * treats the classpath string as a literal OS path, which does not exist.
+     * We must resolve via {@code getClass().getResource()} first.
+     */
+    private File resolveCSVFile() {
+        try {
+            URL url = getClass().getResource(EMPLOYEE_DATA_FILE);
+            if (url != null && "file".equals(url.getProtocol())) {
+                return new File(url.toURI());
             }
+        } catch (Exception e) {
+            System.err.println("[HREmployeeView] Cannot resolve CSV: " + e.getMessage());
         }
-        saveEmployeesToCSV(EMPLOYEE_DATA_FILE);
-        refreshTable();
+        showErrorAlert("File Error",
+                "Cannot locate employee data file on disk.",
+                "Make sure the project is run from an IDE/Gradle, not from inside a JAR.\n"
+                        + "Path: " + EMPLOYEE_DATA_FILE);
+        return null;
     }
 
-    @FXML
-    public void handleViewAndUpdateButton() {
-        AllEmployee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
-        if (selectedEmployee != null) {
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_view_and_update_employee.fxml"));
-                Parent parent = loader.load();
+    private void saveEmployeesToCSV() {
+        File file = resolveCSVFile();
+        if (file == null) return; // error already shown
 
-                HRViewAndUpdateEmployee controller = loader.getController();
-                controller.setEmployee(selectedEmployee);
-                controller.setParentController(this);
+        try (BufferedWriter writer = new BufferedWriter(
+                new FileWriter(file, StandardCharsets.UTF_8))) {
 
-                Stage stage = new Stage();
-                stage.setTitle("View and Update Employee");
-                stage.setScene(new Scene(parent));
-                stage.showAndWait(); // Wait for the pop-up to close
-
-                // After the pop-up closes, refresh the table data
-                refreshTable();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Error");
-                alert.setHeaderText("Could not open the update window.");
-                alert.setContentText("An error occurred while trying to load the employee update form.");
-                alert.showAndWait();
-            }
-        }
-    }
-
-    @FXML
-    private void handleDeleteEmployeeButton() {
-        AllEmployee selectedEmployee = emp_table.getSelectionModel().getSelectedItem();
-        if (selectedEmployee != null) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("Confirm Deletion");
-            alert.setHeaderText("Delete Employee: " + selectedEmployee.getFirstName() + " " + selectedEmployee.getLastName() + "?");
-            alert.setContentText("Are you sure you want to delete this employee record? This action cannot be undone.");
-
-            Optional<ButtonType> result = alert.showAndWait();
-            if (result.isPresent() && result.get() == ButtonType.OK) {
-                employeeList.remove(selectedEmployee);
-                saveEmployeesToCSV("/org/example/motorphui/data/motorph_employee_data.csv");
-                refreshTable();
-                Alert successAlert = new Alert(Alert.AlertType.INFORMATION);
-                successAlert.setTitle("Deletion Successful");
-                successAlert.setHeaderText(null);
-                successAlert.setContentText("Employee record deleted successfully.");
-                successAlert.showAndWait();
-            }
-        } else {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle("No Selection");
-            alert.setHeaderText("No Employee Selected");
-            alert.setContentText("Please select an employee in the table to delete.");
-            alert.showAndWait();
-        }
-    }
-
-    public void refreshTable() {
-        loadEmployeesFromCSV();
-    }
-
-    private void saveEmployeesToCSV(String filePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writer.write("Employee #,Last Name,First Name,Birthday,Address,Phone Number,SSS #,PhilHealth #,TIN #,Pag-Ibig #,Status,Position,Immediate Supervisor,Basic Salary,Rice Subsidy,Phone Allowance,Clothing Allowance,Gross Semi-monthly Rate,Hourly Rate\n");
+            writer.write(CSV_HEADER);
+            writer.newLine();
 
             for (AllEmployee emp : employeeList) {
                 writer.write(String.join(",",
@@ -261,45 +176,138 @@ public class HREmployeeView {
                 ));
                 writer.newLine();
             }
+
         } catch (IOException e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Save Error");
-            alert.setHeaderText("Failed to save employee data.");
-            alert.setContentText("An error occurred while writing to the CSV file.");
-            alert.showAndWait();
+            showErrorAlert("Save Error", "Failed to save employee data.", e.getMessage());
         }
+    }
+
+    // ── Public API used by child windows ─────────────────────────────────────
+
+    /** Returns a snapshot of all current employee numbers for duplicate checking. */
+    public java.util.Set<String> getExistingEmpNumbers() {
+        java.util.Set<String> ids = new java.util.HashSet<>();
+        for (AllEmployee e : employeeList) ids.add(e.getEmployeeNumber());
+        return ids;
     }
 
     public void addEmployee(AllEmployee employee) {
         employeeList.add(employee);
-        saveEmployeesToCSV(EMPLOYEE_DATA_FILE);
+        saveEmployeesToCSV();
         refreshTable();
+    }
+
+    public void updateEmployee(AllEmployee updated) {
+        for (int i = 0; i < employeeList.size(); i++) {
+            if (employeeList.get(i).getEmployeeNumber()
+                    .equals(updated.getEmployeeNumber())) {
+                employeeList.set(i, updated);
+                break;
+            }
+        }
+        saveEmployeesToCSV();
+        refreshTable();
+    }
+
+    public void refreshTable() {
+        loadEmployeesFromCSV();
+    }
+
+    // ── Button handlers ───────────────────────────────────────────────────────
+
+    @FXML
+    public void handleViewAndUpdateButton() {
+        AllEmployee selected = emp_table.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showWarningAlert("No Selection", "Please select an employee row first.");
+            return;
+        }
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/org/example/motorphui/hr_view_and_update_employee.fxml"));
+            Parent parent = loader.load();
+
+            HRViewAndUpdateEmployee ctrl = loader.getController();
+            ctrl.setEmployee(selected);
+            ctrl.setParentController(this);
+
+            Stage stage = new Stage();
+            stage.setTitle("View and Update Employee");
+            stage.setScene(new Scene(parent));
+            stage.setResizable(false);
+            stage.showAndWait();
+
+            refreshTable();
+        } catch (IOException e) {
+            showErrorAlert("Error", "Could not open the update window.", e.getMessage());
+        }
     }
 
     @FXML
     public void openAddEmployeeWindow() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/add_employee.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(
+                    "/org/example/motorphui/add_employee.fxml"));
             Parent root = loader.load();
 
-            AddEmployee addController = loader.getController();
-            addController.SetParentController(this);
+            AddEmployee ctrl = loader.getController();
+            ctrl.setParentController(this);
 
             Stage stage = new Stage();
             stage.setTitle("Add New Employee");
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
             stage.showAndWait();
         } catch (IOException e) {
             showErrorAlert("Load Error", "Failed to open Add Employee form.", e.getMessage());
         }
     }
 
+    @FXML
+    private void handleDeleteEmployeeButton() {
+        AllEmployee selected = emp_table.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showWarningAlert("No Selection",
+                    "Please select an employee in the table to delete.");
+            return;
+        }
+
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Deletion");
+        confirm.setHeaderText("Delete: " + selected.getFirstName()
+                + " " + selected.getLastName() + "?");
+        confirm.setContentText(
+                "This action cannot be undone. Are you sure?");
+        Optional<ButtonType> result = confirm.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            employeeList.remove(selected);
+            saveEmployeesToCSV();
+            refreshTable();
+
+            Alert ok = new Alert(Alert.AlertType.INFORMATION);
+            ok.setTitle("Deleted");
+            ok.setHeaderText(null);
+            ok.setContentText("Employee record deleted successfully.");
+            ok.showAndWait();
+        }
+    }
+
+    // ── Alert helpers ─────────────────────────────────────────────────────────
+
     private void showErrorAlert(String title, String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
+        Alert a = new Alert(Alert.AlertType.ERROR);
+        a.setTitle(title);
+        a.setHeaderText(header);
+        a.setContentText(content);
+        a.showAndWait();
+    }
+
+    private void showWarningAlert(String title, String content) {
+        Alert a = new Alert(Alert.AlertType.WARNING);
+        a.setTitle(title);
+        a.setHeaderText(null);
+        a.setContentText(content);
+        a.showAndWait();
     }
 }

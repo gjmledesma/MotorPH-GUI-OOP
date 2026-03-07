@@ -1,10 +1,10 @@
-package org.example.motorphui.service;
+package org.example.motorphui.dao;
 
 import java.io.*;
 import org.example.motorphui.model.AllEmployee;
-import org.example.motorphui.dao.AllEmployeeDAO;
+import org.example.motorphui.model.AllEmployeePublic;
 
-public abstract class AuthenticationService {
+public abstract class AuthenticationDAO {
     private static final String CREDENTIALS_FILE_PATH = "/org/example/motorphui/data/motorph_employee_credentials.csv";
     private static final String HR_CREDENTIALS_FILE_PATH = "/org/example/motorphui/data/motorph_hr_credentials.csv";
     private static final String FINANCE_CREDENTIALS_FILE_PATH = "/org/example/motorphui/data/motorph_finance_credentials.csv";
@@ -12,7 +12,7 @@ public abstract class AuthenticationService {
     
     // Method for HR
     public static boolean authenticateHR(String username, String password) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(AuthenticationService.class.getResourceAsStream(HR_CREDENTIALS_FILE_PATH)))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(AuthenticationDAO.class.getResourceAsStream(HR_CREDENTIALS_FILE_PATH)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -31,7 +31,7 @@ public abstract class AuthenticationService {
 
     // Method for Finance
     public static boolean authenticateFinance(String username, String password) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(AuthenticationService.class.getResourceAsStream(FINANCE_CREDENTIALS_FILE_PATH)))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(AuthenticationDAO.class.getResourceAsStream(FINANCE_CREDENTIALS_FILE_PATH)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -50,7 +50,7 @@ public abstract class AuthenticationService {
     
     // Method for IT
     public static boolean authenticateIT(String username, String password) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(AuthenticationService.class.getResourceAsStream(IT_CREDENTIALS_FILE_PATH)))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(AuthenticationDAO.class.getResourceAsStream(IT_CREDENTIALS_FILE_PATH)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -70,7 +70,7 @@ public abstract class AuthenticationService {
     // Method for Employee
     public static boolean authenticate(String empId, String username, String password) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                AuthenticationService.class.getResourceAsStream(CREDENTIALS_FILE_PATH)))) {
+                AuthenticationDAO.class.getResourceAsStream(CREDENTIALS_FILE_PATH)))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
@@ -89,12 +89,12 @@ public abstract class AuthenticationService {
 
     public static AllEmployee getEmployeeData(String empId) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                AuthenticationService.class.getResourceAsStream("/org/example/motorphui/data/motorph_employee_data.csv")))) {
+                AuthenticationDAO.class.getResourceAsStream("/org/example/motorphui/data/motorph_employee_data.csv")))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
                 if (data.length == 19 && data[0].trim().equals(empId.trim())) {
-                    return new AllEmployeeDAO(
+                    return new AllEmployeePublic(
                             data[0], data[1], data[2], data[3], data[4],
                             data[5], data[6], data[7], data[8], data[9],
                             data[10], data[11], data[12], data[13], data[14],

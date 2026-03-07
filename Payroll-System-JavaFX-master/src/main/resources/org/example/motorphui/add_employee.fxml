@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="850.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.AddEmployee">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.AddEmployee">
     <children>
-      <GridPane hgap="10.0" layoutX="20.0" layoutY="76.0" prefHeight="702.0" prefWidth="560.0" vgap="10.0">
+      <GridPane hgap="10.0" layoutX="20.0" layoutY="76.0" prefHeight="550.0" prefWidth="560.0" vgap="10.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="280.0" minWidth="10.0" prefWidth="130.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="410.0" minWidth="10.0" prefWidth="390.0" />
@@ -153,11 +153,8 @@
             <Font name="System Bold" size="24.0" />
          </font>
       </Label>
-      <HBox alignment="CENTER" layoutX="22.0" layoutY="792.0" prefHeight="40.0" prefWidth="560.0" spacing="20.0">
-         <children>
-              <Button fx:id="addEmpButton" mnemonicParsing="false" onAction="#onAddButtonClick" prefHeight="30.0" prefWidth="100.0" text="Add" />
-              <Button fx:id="CancelButton" mnemonicParsing="false" onAction="#handleCancel" prefHeight="30.0" prefWidth="100.0" text="Cancel" />
-         </children>
-      </HBox>
+      <HBox alignment="CENTER" layoutX="22.0" layoutY="792.0" prefHeight="40.0" prefWidth="560.0" spacing="20.0" />
+        <Button fx:id="addEmpButton" layoutX="194.0" layoutY="648.0" mnemonicParsing="false" onAction="#onAddButtonClick" prefHeight="30.0" prefWidth="100.0" text="Add" />
+        <Button fx:id="CancelButton" layoutX="314.0" layoutY="648.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="30.0" prefWidth="100.0" text="Cancel" />
     </children>
 </AnchorPane>

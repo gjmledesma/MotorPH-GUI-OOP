@@ -1,8 +1,212 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
+<!--
+  employee_payslip.fxml  —  read-only payslip modal (500 × 700)
+  Opened by EmployeeViewSalary. All labels are populated via
+  EmployeePayslip.setPayslipData().
+-->
+<AnchorPane fx:id="root"
+            prefHeight="700.0" prefWidth="500.0"
+            stylesheets="@css/employee_payslip.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.motorphui.ui.EmployeePayslip">
+  <children>
 
-<AnchorPane fx:id="root" prefHeight="652.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.EmployeePayslip">
+    <VBox layoutX="12.0" layoutY="12.0"
+          prefWidth="476.0"
+          spacing="0"
+          styleClass="ps-card">
 
+      <!-- ── HEADER ──────────────────────────────────────────────── -->
+      <VBox styleClass="ps-header" alignment="CENTER" prefHeight="72.0">
+        <Label text="MotorPH" styleClass="ps-company">
+          <font><Font name="Poppins Bold" size="20.0"/></font>
+        </Label>
+        <Label text="PAYSLIP" styleClass="ps-doc-title">
+          <font><Font name="Poppins SemiBold" size="11.0"/></font>
+        </Label>
+        <Label fx:id="period_label" text="Month YYYY" styleClass="ps-period">
+          <font><Font name="Poppins Regular" size="11.0"/></font>
+        </Label>
+        <padding><Insets top="10.0" right="20.0" bottom="10.0" left="20.0"/></padding>
+      </VBox>
+
+      <Separator styleClass="ps-divider"/>
+
+      <!-- ── EMPLOYEE INFO ───────────────────────────────────────── -->
+      <VBox styleClass="ps-section-bg">
+        <padding><Insets top="8.0" right="16.0" bottom="8.0" left="16.0"/></padding>
+
+        <Label text="EMPLOYEE INFORMATION" styleClass="ps-section-title">
+          <font><Font name="Poppins Bold" size="9.0"/></font>
+          <VBox.margin><Insets bottom="6.0"/></VBox.margin>
+        </Label>
+
+        <GridPane hgap="8.0" vgap="4.0">
+          <columnConstraints>
+            <ColumnConstraints prefWidth="95.0"/>
+            <ColumnConstraints prefWidth="140.0" hgrow="ALWAYS"/>
+            <ColumnConstraints prefWidth="70.0"/>
+            <ColumnConstraints prefWidth="130.0" hgrow="ALWAYS"/>
+          </columnConstraints>
+
+          <!-- Row 0 -->
+          <Label text="Employee #"   styleClass="ps-key"   GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+          <Label fx:id="ps_empnum_label"   styleClass="ps-val" GridPane.columnIndex="1" GridPane.rowIndex="0" text="—"/>
+          <Label text="Status"       styleClass="ps-key"   GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+          <Label fx:id="ps_status_label"   styleClass="ps-val" GridPane.columnIndex="3" GridPane.rowIndex="0" text="—"/>
+
+          <!-- Row 1 -->
+          <Label text="Name"         styleClass="ps-key"   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+          <Label fx:id="ps_name_label"     styleClass="ps-val" GridPane.columnIndex="1" GridPane.rowIndex="1" text="—" wrapText="true"/>
+          <Label text="Supervisor"   styleClass="ps-key"   GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+          <Label fx:id="ps_supervisor_label" styleClass="ps-val" GridPane.columnIndex="3" GridPane.rowIndex="1" text="—" wrapText="true"/>
+
+          <!-- Row 2 -->
+          <Label text="Position"     styleClass="ps-key"   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+          <Label fx:id="ps_position_label" styleClass="ps-val" GridPane.columnIndex="1" GridPane.rowIndex="2" text="—" wrapText="true"/>
+          <Label text="SSS #"        styleClass="ps-key"   GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+          <Label fx:id="ps_sss_label"      styleClass="ps-val" GridPane.columnIndex="3" GridPane.rowIndex="2" text="—"/>
+
+          <!-- Row 3 -->
+          <Label text="PhilHealth #" styleClass="ps-key"   GridPane.columnIndex="2" GridPane.rowIndex="3"/>
+          <Label fx:id="ps_philhealth_label" styleClass="ps-val" GridPane.columnIndex="3" GridPane.rowIndex="3" text="—"/>
+
+          <!-- Row 4 -->
+          <Label text="TIN #"        styleClass="ps-key"   GridPane.columnIndex="2" GridPane.rowIndex="4"/>
+          <Label fx:id="ps_tin_label"      styleClass="ps-val" GridPane.columnIndex="3" GridPane.rowIndex="4" text="—"/>
+
+          <!-- Row 5 -->
+          <Label text="Pag-Ibig #"   styleClass="ps-key"   GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+          <Label fx:id="ps_pagibig_label"  styleClass="ps-val" GridPane.columnIndex="3" GridPane.rowIndex="5" text="—"/>
+        </GridPane>
+      </VBox>
+
+      <Separator styleClass="ps-divider"/>
+
+      <!-- ── EARNINGS + DEDUCTIONS (side-by-side) ──────────────── -->
+      <HBox prefHeight="270.0">
+
+        <!-- Earnings -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="ps-pay-col">
+          <padding><Insets top="10.0" right="10.0" bottom="10.0" left="16.0"/></padding>
+
+          <Label text="EARNINGS" styleClass="ps-section-title">
+            <font><Font name="Poppins Bold" size="9.0"/></font>
+            <VBox.margin><Insets bottom="6.0"/></VBox.margin>
+          </Label>
+
+          <GridPane hgap="6.0" vgap="5.0">
+            <columnConstraints>
+              <ColumnConstraints hgrow="ALWAYS"/>
+              <ColumnConstraints minWidth="90.0"/>
+            </columnConstraints>
+            <Label text="Hours Worked"          styleClass="ps-key"   GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="ps_hours_label"       styleClass="ps-earn"  GridPane.columnIndex="1" GridPane.rowIndex="0" text="—"/>
+            <Label text="Hourly Rate"           styleClass="ps-key"   GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="ps_rate_label"        styleClass="ps-earn"  GridPane.columnIndex="1" GridPane.rowIndex="1" text="—"/>
+            <Label text="Basic Pay"             styleClass="ps-key"   GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="ps_basicpay_label"    styleClass="ps-earn"  GridPane.columnIndex="1" GridPane.rowIndex="2" text="—"/>
+          </GridPane>
+
+          <Separator styleClass="ps-inner-sep"><VBox.margin><Insets top="6.0" bottom="6.0"/></VBox.margin></Separator>
+
+          <Label text="ALLOWANCES" styleClass="ps-sub-title">
+            <font><Font name="Poppins SemiBold" size="9.0"/></font>
+            <VBox.margin><Insets bottom="4.0"/></VBox.margin>
+          </Label>
+
+          <GridPane hgap="6.0" vgap="5.0">
+            <columnConstraints>
+              <ColumnConstraints hgrow="ALWAYS"/>
+              <ColumnConstraints minWidth="90.0"/>
+            </columnConstraints>
+            <Label text="Rice Subsidy"     styleClass="ps-key"  GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="ps_rice_label"   styleClass="ps-earn" GridPane.columnIndex="1" GridPane.rowIndex="0" text="—"/>
+            <Label text="Phone Allowance"  styleClass="ps-key"  GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="ps_phone_label"  styleClass="ps-earn" GridPane.columnIndex="1" GridPane.rowIndex="1" text="—"/>
+            <Label text="Clothing Allow."  styleClass="ps-key"  GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="ps_clothing_label" styleClass="ps-earn" GridPane.columnIndex="1" GridPane.rowIndex="2" text="—"/>
+          </GridPane>
+
+          <Separator styleClass="ps-inner-sep"><VBox.margin><Insets top="6.0" bottom="4.0"/></VBox.margin></Separator>
+
+          <HBox alignment="CENTER_LEFT">
+            <Label text="GROSS PAY" styleClass="ps-total-key" HBox.hgrow="ALWAYS">
+              <font><Font name="Poppins Bold" size="11.0"/></font>
+            </Label>
+            <Label fx:id="ps_gross_label" styleClass="ps-total-earn" text="—">
+              <font><Font name="Poppins Bold" size="11.0"/></font>
+            </Label>
+          </HBox>
+        </VBox>
+
+        <Separator orientation="VERTICAL" styleClass="ps-col-div"/>
+
+        <!-- Deductions -->
+        <VBox HBox.hgrow="ALWAYS" styleClass="ps-pay-col">
+          <padding><Insets top="10.0" right="16.0" bottom="10.0" left="10.0"/></padding>
+
+          <Label text="DEDUCTIONS" styleClass="ps-section-title">
+            <font><Font name="Poppins Bold" size="9.0"/></font>
+            <VBox.margin><Insets bottom="6.0"/></VBox.margin>
+          </Label>
+
+          <GridPane hgap="6.0" vgap="5.0">
+            <columnConstraints>
+              <ColumnConstraints hgrow="ALWAYS"/>
+              <ColumnConstraints minWidth="90.0"/>
+            </columnConstraints>
+            <Label text="SSS"               styleClass="ps-key"    GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <Label fx:id="ps_sss_con_label" styleClass="ps-deduct" GridPane.columnIndex="1" GridPane.rowIndex="0" text="—"/>
+            <Label text="PhilHealth"        styleClass="ps-key"    GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="ps_ph_con_label"  styleClass="ps-deduct" GridPane.columnIndex="1" GridPane.rowIndex="1" text="—"/>
+            <Label text="Pag-Ibig"          styleClass="ps-key"    GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="ps_pi_con_label"  styleClass="ps-deduct" GridPane.columnIndex="1" GridPane.rowIndex="2" text="—"/>
+            <Label text="Withholding Tax"   styleClass="ps-key"    GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <Label fx:id="ps_tax_label"     styleClass="ps-deduct" GridPane.columnIndex="1" GridPane.rowIndex="3" text="—"/>
+          </GridPane>
+
+          <Separator styleClass="ps-inner-sep"><VBox.margin><Insets top="6.0" bottom="4.0"/></VBox.margin></Separator>
+
+          <HBox alignment="CENTER_LEFT">
+            <Label text="TOTAL DEDUCT." styleClass="ps-total-key" HBox.hgrow="ALWAYS">
+              <font><Font name="Poppins Bold" size="11.0"/></font>
+            </Label>
+            <Label fx:id="ps_totaldeduct_label" styleClass="ps-total-deduct" text="—">
+              <font><Font name="Poppins Bold" size="11.0"/></font>
+            </Label>
+          </HBox>
+        </VBox>
+
+      </HBox><!-- end earnings/deductions -->
+
+      <!-- ── NET PAY ─────────────────────────────────────────────── -->
+      <Separator styleClass="ps-divider"/>
+
+      <HBox styleClass="ps-net-bar" alignment="CENTER_RIGHT" prefHeight="56.0">
+        <Label text="NET PAY" styleClass="ps-net-key">
+          <font><Font name="Poppins Bold" size="13.0"/></font>
+          <HBox.margin><Insets right="16.0"/></HBox.margin>
+        </Label>
+        <Label fx:id="ps_net_label" styleClass="ps-net-amount" text="—">
+          <font><Font name="Poppins Bold" size="20.0"/></font>
+        </Label>
+        <padding><Insets top="8.0" right="20.0" bottom="8.0" left="20.0"/></padding>
+      </HBox>
+
+    </VBox><!-- end ps-card -->
+
+  </children>
 </AnchorPane>

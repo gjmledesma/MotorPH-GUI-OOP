@@ -1,7 +1,8 @@
 package org.example.motorphui.ui;
 
 import org.example.motorphui.model.AllEmployee;
-import org.example.motorphui.service.AuthenticationService;
+import org.example.motorphui.dao.AuthenticationDAO;
+import org.example.motorphui.session.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,7 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class EmployeeLogin extends AuthenticationService {
+public class EmployeeLogin extends AuthenticationDAO {
     @FXML
     private TextField employeeid_field;
 
@@ -72,8 +73,9 @@ public class EmployeeLogin extends AuthenticationService {
         }
 
         // Authenticate user
-        if (AuthenticationService.authenticate(empId, username, password)) {
-            AllEmployee employee = AuthenticationService.getEmployeeData(empId);
+        if (AuthenticationDAO.authenticate(empId, username, password)) {
+            AllEmployee employee = AuthenticationDAO.getEmployeeData(empId);
+            SessionManager.getInstance().setCurrentEmployee(employee); // ✅ fix: store in session
 
             try {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/employee_dashboard.fxml"));

@@ -1,6 +1,7 @@
 package org.example.motorphui.ui;
 
 import org.example.motorphui.model.AllEmployee;
+import org.example.motorphui.dao.AuthenticationDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -10,6 +11,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import javafx.scene.control.Label;
+
 
 public class EmployeeDashboard {
 
@@ -20,16 +23,43 @@ public class EmployeeDashboard {
     @FXML
     private Button logout_button;
 
+    private AllEmployee currentEmployee;
+    
     @FXML
     public void initialize() {
-        loadView("/org/example/motorphui/employee_profile.fxml");
+//        loadView("/org/example/motorphui/employee_profile.fxml");
         setActiveButton(profile_button);
     }
+    
+    public void setCurrentEmployee(String empId) {
+        this.currentEmployee = AuthenticationDAO.getEmployeeData(empId);
+        if (this.currentEmployee != null) {
+            loadProfile(this.currentEmployee);
+        }
+        setActiveButton(profile_button);
+    }
+
+    /**
+     * Overload that accepts an AllEmployee directly (e.g. if caller already has the object).
+     * Always stores the employee so the Profile tab can reload it correctly.
+     */
+    public void setCurrentEmployee(AllEmployee employee) {
+        this.currentEmployee = employee;
+        loadProfile(employee);
+        setActiveButton(profile_button);
+    }
+    
     @FXML
     private void onProfileClicked() {
-        loadView("/org/example/motorphui/employee_profile.fxml");
+        if (currentEmployee != null) {
+            loadProfile(currentEmployee);
+        } else {
+            // Safe fallback — should not normally reach here
+            loadView("/org/example/motorphui/employee_profile.fxml");
+        }
         setActiveButton(profile_button);
     }
+    
     @FXML
     private void onAttendanceClicked() {
         loadView("/org/example/motorphui/employee_attendance.fxml");
@@ -63,6 +93,9 @@ public class EmployeeDashboard {
     }
 
     public void loadProfile(AllEmployee employee) {
+        // Always keep currentEmployee in sync
+        this.currentEmployee = employee;
+
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/employee_profile.fxml"));
             Parent root = loader.load();

@@ -1,0 +1,147 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   employee_view_salary.css
+   ═══════════════════════════════════════════════════════════════════════ */
+
+#root {
+    -fx-background-color: #F0F2F5;
+}
+
+/* ── Employee strip ─────────────────────────────────────────────────── */
+.emp-strip {
+    -fx-background-color: transparent;
+}
+.emp-name {
+    -fx-text-fill: #1A2B45;
+}
+.emp-meta {
+    -fx-text-fill: #6B7A99;
+    -fx-font-size: 12;
+}
+
+/* ── Dividers ────────────────────────────────────────────────────────── */
+.divider {
+    -fx-background-color: #DDE1E9;
+}
+
+/* ── Controls ────────────────────────────────────────────────────────── */
+.form-label {
+    -fx-text-fill: #6B7A99;
+    -fx-font-size: 11;
+}
+
+.month-combo {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #C8D0DF;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 13;
+}
+
+.year-chip {
+    -fx-text-fill: #1A3C5E;
+    -fx-background-color: #D6E8F7;
+    -fx-background-radius: 6;
+    -fx-padding: 4 10 4 10;
+}
+
+.btn-payslip {
+    -fx-background-color: #1A3C5E;
+    -fx-text-fill: #FFFFFF;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+.btn-payslip:hover {
+    -fx-background-color: #254F78;
+}
+.btn-payslip:disabled {
+    -fx-background-color: #B0BEC5;
+    -fx-text-fill: #ECEFF1;
+}
+
+/* ── Summary card ────────────────────────────────────────────────────── */
+.summary-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 12;
+    -fx-border-color: #DDE1E9;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 12, 0, 0, 2);
+}
+
+.pay-section {
+    -fx-background-color: transparent;
+}
+
+.col-divider {
+    -fx-background-color: #DDE1E9;
+    -fx-pref-width: 1;
+}
+
+.inner-sep {
+    -fx-background-color: #EAEDF2;
+    -fx-opacity: 0.9;
+}
+
+/* ── Section labels ──────────────────────────────────────────────────── */
+.section-title {
+    -fx-text-fill: #1A3C5E;
+    -fx-font-size: 11;
+}
+.sub-title {
+    -fx-text-fill: #6B7A99;
+    -fx-font-size: 10;
+}
+
+/* ── Row labels ──────────────────────────────────────────────────────── */
+.row-key {
+    -fx-text-fill: #5A677F;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 12;
+}
+.row-value {
+    -fx-text-fill: #1B5E20;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 12;
+    -fx-alignment: CENTER_RIGHT;
+}
+.row-value-d {
+    -fx-text-fill: #B71C1C;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 12;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* ── Totals ──────────────────────────────────────────────────────────── */
+.total-key {
+    -fx-text-fill: #1A2B45;
+}
+.total-value-earn {
+    -fx-text-fill: #1B5E20;
+    -fx-min-width: 130;
+    -fx-alignment: CENTER_RIGHT;
+}
+.total-value-deduct {
+    -fx-text-fill: #B71C1C;
+    -fx-min-width: 130;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* ── Net pay bar ─────────────────────────────────────────────────────── */
+.net-bar {
+    -fx-background-color: #EBF5FB;
+    -fx-background-radius: 0 0 12 12;
+}
+.net-label {
+    -fx-text-fill: #1A3C5E;
+}
+.net-amount {
+    -fx-min-width: 160;
+    -fx-alignment: CENTER_RIGHT;
+}
+.net-positive {
+    -fx-text-fill: #0D47A1;
+}
+.net-negative {
+    -fx-text-fill: #B71C1C;
+}

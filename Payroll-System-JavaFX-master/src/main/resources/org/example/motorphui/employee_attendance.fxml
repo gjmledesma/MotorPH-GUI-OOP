@@ -1,15 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" stylesheets="@css/employee_attendance.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.EmployeeAttendance">
-   <children>
-      <Label fx:id="attendance_label" layoutX="40.0" layoutY="35.0" text="Attendance">
-         <font>
-            <Font name="Poppins Bold" size="36.0" />
-         </font>
-      </Label>
-   </children>
+
+    <children>
+
+        <!-- ── Page title ──────────────────────────────────────────────────── -->
+        <Label fx:id="attendance_label" layoutX="40.0" layoutY="35.0" text="Attendance">
+            <font><Font name="Poppins Bold" size="36.0" /></font>
+        </Label>
+
+        <!-- ── Employee info card ─────────────────────────────────────────── -->
+        <VBox layoutX="40.0" layoutY="95.0" spacing="2.0">
+            <Label fx:id="emp_name_label" styleClass="emp-name-label" text="Employee Name">
+                <font><Font name="Poppins SemiBold" size="16.0" /></font>
+            </Label>
+            <Label fx:id="emp_id_label" styleClass="emp-id-label" text="ID: 00000">
+                <font><Font name="Poppins Regular" size="12.0" /></font>
+            </Label>
+        </VBox>
+
+        <!-- ── Live clock + date (top-right) ──────────────────────────────── -->
+        <VBox alignment="CENTER_RIGHT" layoutX="733.0" layoutY="92.0" spacing="2.0">
+            <Label fx:id="clock_label" styleClass="clock-label" text="00:00:00 AM">
+                <font><Font name="Poppins Bold" size="22.0" /></font>
+            </Label>
+            <Label fx:id="date_label" styleClass="date-label" text="January 01, 2024">
+                <font><Font name="Poppins Regular" size="12.0" /></font>
+            </Label>
+        </VBox>
+
+        <!-- ── Separator ──────────────────────────────────────────────────── -->
+        <Separator layoutX="40.0" layoutY="155.0" prefWidth="820.0" />
+
+        <!-- ── Time-In / Time-Out action row ──────────────────────────────── -->
+        <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="172.0" spacing="16.0">
+
+            <Button fx:id="time_in_button" onAction="#handleTimeIn" prefHeight="42.0" prefWidth="130.0" styleClass="btn-time-in" text="⏱  Time In">
+                <font><Font name="Poppins SemiBold" size="13.0" /></font>
+            </Button>
+
+            <Button fx:id="time_out_button" disable="true" onAction="#handleTimeOut" prefHeight="42.0" prefWidth="130.0" styleClass="btn-time-out" text="🏁  Time Out">
+                <font><Font name="Poppins SemiBold" size="13.0" /></font>
+            </Button>
+
+            <!-- Dynamic status message sits beside the buttons -->
+            <Label fx:id="status_label" maxWidth="480.0" styleClass="status-idle" text="Not yet timed in today." wrapText="true">
+                <font><Font name="Poppins Regular" size="13.0" /></font>
+                <HBox.margin><Insets left="12.0" /></HBox.margin>
+            </Label>
+
+        </HBox>
+
+        <!-- ── Attendance history TableView ───────────────────────────────── -->
+        <Label layoutX="40.0" layoutY="242.0" styleClass="section-label" text="Attendance History">
+            <font><Font name="Poppins SemiBold" size="14.0" /></font>
+        </Label>
+
+        <TableView fx:id="attendance_table" layoutX="40.0" layoutY="266.0" prefHeight="390.0" prefWidth="820.0">
+            <columns>
+
+                <TableColumn fx:id="empNumColumn" prefWidth="100.0" text="Employee #" />
+
+                <TableColumn fx:id="lastNameColumn" prefWidth="130.0" text="Last Name" />
+
+                <TableColumn fx:id="firstNameColumn" prefWidth="145.0" text="First Name" />
+
+                <TableColumn fx:id="dateColumn" prefWidth="120.0" text="Date" />
+
+                <TableColumn fx:id="logInColumn" prefWidth="110.0" text="Login Time" />
+
+                <TableColumn fx:id="logOutColumn" prefWidth="110.0" text="Logout Time" />
+
+                <TableColumn fx:id="statusColumn" prefWidth="105.0" text="Status" />
+
+            </columns>
+        </TableView>
+
+    </children>
 </AnchorPane>

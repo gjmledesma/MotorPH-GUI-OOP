@@ -1,15 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" stylesheets="@css/employee_leave_form.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.EmployeeLeaveForm">
-   <children>
-      <Label fx:id="leaveform_label" layoutX="40.0" layoutY="35.0" text="Leave Form">
-         <font>
-            <Font name="Poppins Bold" size="36.0" />
-         </font>
-      </Label>
-   </children>
+
+    <children>
+
+        <!-- ── Page title ─────────────────────────────────────────────────── -->
+        <Label fx:id="leaveform_label" layoutX="40.0" layoutY="35.0" text="Leave Form">
+            <font><Font name="Poppins Bold" size="36.0" /></font>
+        </Label>
+
+        <!-- ── Employee info ──────────────────────────────────────────────── -->
+        <VBox layoutX="40.0" layoutY="92.0" spacing="2.0">
+            <Label fx:id="emp_name_label" styleClass="emp-name-label" text="Employee Name">
+                <font><Font name="Poppins SemiBold" size="15.0" /></font>
+            </Label>
+            <Label fx:id="emp_id_label" styleClass="emp-id-label" text="ID: 00000">
+                <font><Font name="Poppins Regular" size="12.0" /></font>
+            </Label>
+        </VBox>
+
+        <Separator layoutX="40.0" layoutY="140.0" prefWidth="820.0" />
+
+        <!-- ── Leave request form ─────────────────────────────────────────── -->
+        <Label layoutX="40.0" layoutY="156.0" styleClass="section-label" text="New Leave Request">
+            <font><Font name="Poppins SemiBold" size="14.0" /></font>
+        </Label>
+
+        <!-- Row 1: Leave Type + Days preview -->
+        <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="182.0" spacing="20.0">
+
+            <VBox spacing="4.0">
+                <Label styleClass="form-label" text="Leave Type">
+                    <font><Font name="Poppins Regular" size="12.0" /></font>
+                </Label>
+                <ComboBox fx:id="leave_type_combo" prefWidth="220.0" />
+            </VBox>
+
+            <VBox spacing="4.0">
+                <Label styleClass="form-label" text="Start Date">
+                    <font><Font name="Poppins Regular" size="12.0" /></font>
+                </Label>
+                <DatePicker fx:id="start_date_picker" prefWidth="160.0" />
+            </VBox>
+
+            <VBox spacing="4.0">
+                <Label styleClass="form-label" text="End Date">
+                    <font><Font name="Poppins Regular" size="12.0" /></font>
+                </Label>
+                <DatePicker fx:id="end_date_picker" prefWidth="160.0" />
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="4.0">
+                <Label styleClass="form-label" text="Duration">
+                    <font><Font name="Poppins Regular" size="12.0" /></font>
+                </Label>
+                <Label fx:id="days_label" styleClass="days-label" text="—">
+                    <font><Font name="Poppins SemiBold" size="14.0" /></font>
+                </Label>
+            </VBox>
+
+        </HBox>
+
+        <!-- Row 2: Reason text area -->
+        <VBox layoutX="40.0" layoutY="272.0" spacing="4.0">
+            <Label styleClass="form-label" text="Reason">
+                <font><Font name="Poppins Regular" size="12.0" /></font>
+            </Label>
+            <TextArea fx:id="reason_field" prefHeight="80.0" prefWidth="820.0" promptText="Briefly describe the reason for your leave request..." wrapText="true" />
+        </VBox>
+
+        <!-- Row 3: Action buttons -->
+        <HBox layoutX="40.0" layoutY="375.0" spacing="12.0">
+            <Button fx:id="submit_button" onAction="#handleSubmit" prefHeight="38.0" prefWidth="150.0" styleClass="btn-submit" text="Submit Request">
+                <font><Font name="Poppins SemiBold" size="13.0" /></font>
+            </Button>
+            <Button fx:id="clear_button" onAction="#handleClear" prefHeight="38.0" prefWidth="90.0" styleClass="btn-clear" text="Clear">
+                <font><Font name="Poppins Regular" size="13.0" /></font>
+            </Button>
+        </HBox>
+
+        <Separator layoutX="40.0" layoutY="430.0" prefWidth="820.0" />
+
+        <!-- ── Leave history TableView ────────────────────────────────────── -->
+        <Label layoutX="40.0" layoutY="442.0" styleClass="section-label" text="My Leave History">
+            <font><Font name="Poppins SemiBold" size="14.0" /></font>
+        </Label>
+
+        <TableView fx:id="history_table" layoutX="40.0" layoutY="466.0" prefHeight="191.0" prefWidth="820.0">
+            <columns>
+                <TableColumn fx:id="leaveIdColumn" prefWidth="110.0" text="Leave ID" />
+                <TableColumn fx:id="lastNameColumn" prefWidth="100.0" text="Last Name" />
+                <TableColumn fx:id="firstNameColumn" prefWidth="100.0" text="First Name" />
+                <TableColumn fx:id="startDateColumn" prefWidth="95.0" text="Start Date" />
+                <TableColumn fx:id="endDateColumn" prefWidth="95.0" text="End Date" />
+                <TableColumn fx:id="daysColumn" prefWidth="50.0" text="Days" />
+                <TableColumn fx:id="leaveTypeColumn" prefWidth="120.0" text="Leave Type" />
+                <TableColumn fx:id="reasonColumn" prefWidth="80.0" text="Reason" />
+                <TableColumn fx:id="approvalStatusColumn" prefWidth="70.0" text="Approved?" />
+            </columns>
+        </TableView>
+
+    </children>
 </AnchorPane>

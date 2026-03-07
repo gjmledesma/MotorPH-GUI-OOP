@@ -8,34 +8,36 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="900.0" stylesheets="@css/leave_management.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.LeaveManagement">
-   <children>
-      <Label fx:id="emp_info_label" layoutX="20.0" layoutY="35.0" text="Leave Management">
-         <font>
-            <Font name="Poppins Bold" size="36.0" />
-         </font>
-      </Label>
-      <Button fx:id="approve_button" layoutX="591.0" layoutY="544.0" mnemonicParsing="false" pickOnBounds="false" prefHeight="33.0" prefWidth="130.0" text="Approve">
-         <font>
-            <Font name="Poppins Bold" size="15.0" />
-         </font>
-      </Button>
-      <Button fx:id="deny_button" layoutX="736.0" layoutY="544.0" mnemonicParsing="false" pickOnBounds="false" prefHeight="33.0" prefWidth="130.0" text="Deny">
-         <font>
-            <Font name="Poppins Bold" size="15.0" />
-         </font>
-      </Button>
-      <TableView fx:id="leave_table" layoutX="22.0" layoutY="108.0" pickOnBounds="false" prefHeight="421.0" prefWidth="847.0" snapToPixel="false">
-         <columns>
-            <TableColumn prefWidth="59.0" text="Leave ID" />
-            <TableColumn prefWidth="100.0" text="Last name" />
-            <TableColumn prefWidth="100.0" text="First Name" />
-            <TableColumn prefWidth="100.0" text="Start Date" />
-            <TableColumn prefWidth="100.0" text="End Date" />
-            <TableColumn prefWidth="76.40554809570312" text="Days" />
-            <TableColumn prefWidth="123.594482421875" text="Leave Type" />
-            <TableColumn prefWidth="75.6025390625" text="Reason" />
-            <TableColumn prefWidth="110.32086181640625" text="Approved?" />
-         </columns>
-      </TableView>
-   </children>
+
+    <children>
+
+        <Label fx:id="emp_info_label" layoutX="20.0" layoutY="35.0" text="Leave Management">
+            <font><Font name="Poppins Bold" size="36.0" /></font>
+        </Label>
+
+        <!-- TableView — all columns now have fx:id for controller binding -->
+        <TableView fx:id="leave_table" layoutX="22.0" layoutY="108.0" prefHeight="421.0" prefWidth="847.0">
+            <columns>
+                <TableColumn fx:id="leaveIdColumn" prefWidth="105.0" text="Leave ID" />
+                <TableColumn fx:id="lastNameColumn" prefWidth="86.0" text="Last Name" />
+                <TableColumn fx:id="firstNameColumn" prefWidth="104.77455139160156" text="First Name" />
+                <TableColumn fx:id="startDateColumn" prefWidth="86.0" text="Start Date" />
+                <TableColumn fx:id="endDateColumn" prefWidth="79.0" text="End Date" />
+                <TableColumn fx:id="daysColumn" prefWidth="59.0" text="Days" />
+                <TableColumn fx:id="leaveTypeColumn" prefWidth="108.0" text="Leave Type" />
+                <TableColumn fx:id="reasonColumn" prefWidth="115.0" text="Reason" />
+                <TableColumn fx:id="approvalStatusColumn" prefWidth="103.0" text="Approved?" />
+            </columns>
+        </TableView>
+
+        <!-- Approve/Deny buttons wired to controller handlers -->
+        <Button fx:id="approve_button" layoutX="591.0" layoutY="544.0" mnemonicParsing="false" onAction="#handleApprove" prefHeight="33.0" prefWidth="130.0" text="Approve">
+            <font><Font name="Poppins Bold" size="15.0" /></font>
+        </Button>
+
+        <Button fx:id="deny_button" layoutX="736.0" layoutY="544.0" mnemonicParsing="false" onAction="#handleDeny" prefHeight="33.0" prefWidth="130.0" text="Deny">
+            <font><Font name="Poppins Bold" size="15.0" /></font>
+        </Button>
+
+    </children>
 </AnchorPane>

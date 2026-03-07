@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package org.example.motorphui.dao;
+package org.example.motorphui.model;
 
 import org.example.motorphui.model.AllEmployee;
 
@@ -10,9 +10,9 @@ import org.example.motorphui.model.AllEmployee;
  *
  * @author gabrielledesma
  */
-public class AllEmployeeDAO extends AllEmployee {
+public class AllEmployeePublic extends AllEmployee {
     
-    public AllEmployeeDAO(String employeeNumber, String lastName, String firstName, String birthday, String address,
+    public AllEmployeePublic(String employeeNumber, String lastName, String firstName, String birthday, String address,
                          String phoneNumber, String sss, String philHealth, String tin, String pagIbig, String status,
                          String position, String immediateSupervisor, String basicSalary, String riceSubsidy,
                          String phoneAllowance, String clothingAllowance, String grossSemiMonthlyRate, String hourlyRate) {

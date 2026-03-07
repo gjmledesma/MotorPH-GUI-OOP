@@ -2,7 +2,6 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -35,35 +34,41 @@
          </font>
       </Button>
 
-      <ScrollPane fitToHeight="true" fitToWidth="true" layoutX="17.0" layoutY="102.0" prefHeight="489.0" prefWidth="864.0">
-         <content>
-            <TableView fx:id="emp_table" maxWidth="-Infinity" minWidth="860.0" prefHeight="487.0" prefWidth="873.0">
-               <columns>
-                  <TableColumn id="emo" fx:id="empNumColumn" maxWidth="100.0" minWidth="53.20903205871582" prefWidth="79.94672584533691" text="Employee #" />
-                  <TableColumn fx:id="lastNameColumn" maxWidth="146.79098510742188" minWidth="73.25411224365234" prefWidth="74.95491790771484" text="Last Name" />
-                  <TableColumn fx:id="firstNameColumn" maxWidth="147.7458953857422" minWidth="60.63116455078125" prefWidth="73.04510498046875" text="First Name" />
-                  <TableColumn fx:id="birthdayColumn" maxWidth="181.1680145263672" minWidth="52.131195068359375" prefWidth="59.31556701660156" text="Birthday" />
-                  <TableColumn fx:id="addressColumn" maxWidth="229.86880493164062" minWidth="38.061553955078125" prefWidth="51.586090087890625" text="Address" />
-                  <TableColumn fx:id="phoneNumberColumn" maxWidth="291.9384460449219" minWidth="95.11483764648438" prefWidth="95.11483764648438" text="Phone Number" />
-                  <TableColumn fx:id="sssColumn" maxWidth="271.8851623535156" minWidth="39.95501708984375" prefWidth="39.95501708984375" text="SSS #" />
-                  <TableColumn fx:id="philHealthColumn" maxWidth="332.04498291015625" minWidth="54.1640625" prefWidth="77.08209228515625" text="PhilHealth #" />
-                  <TableColumn fx:id="tinColumn" minWidth="52.73834228515625" prefWidth="56.20416259765625" text="TIN #" />
-                  <TableColumn fx:id="pagIbigColumn" minWidth="46.48358154296875" prefWidth="69.0115966796875" text="Pag-Ibig #" />
-                  <TableColumn fx:id="statusColumn" minWidth="41.173583984375" prefWidth="41.173583984375" text="Status" />
-                  <TableColumn fx:id="positionColumn" minWidth="48.013671875" prefWidth="53.50421142578125" text="Position" />
-                  <TableColumn fx:id="supervisorColumn" minWidth="13.4287109375" prefWidth="141.72100830078125" text="Immediate Supervisor" />
-                  <TableColumn fx:id="basicSalaryColumn" minWidth="60.0" prefWidth="455.279052734375" text="Basic Salary" />
-                  <TableColumn fx:id="riceSubsidyColumn" minWidth="60.0" prefWidth="60.0" text="Rice Subsidy" />
-                  <TableColumn fx:id="phoneAllowanceColumn" minWidth="60.0" prefWidth="60.0" text="Phone Allowance" />
-                  <TableColumn fx:id="clothingAllowanceColumn" minWidth="60.0" prefWidth="60.0" text="Clothing Allowance" />
-                  <TableColumn fx:id="grossSemiMonthlyColumn" minWidth="70.0" prefWidth="70.0" text="Gross Semi-monthly Rate" />
-                  <TableColumn fx:id="hourlyRateColumn" minWidth="70.0" prefWidth="70.0" text="Hourly Rate" />
-               </columns>
-<!--               <columnResizePolicy>
-                  <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
-               </columnResizePolicy>-->
-            </TableView>
-         </content>
-      </ScrollPane>
+      <!--
+        TableView placed directly in the AnchorPane — no ScrollPane wrapper.
+        TableView already has its own built-in horizontal + vertical scrollbars;
+        wrapping it in a ScrollPane creates a second bar.  UNCONSTRAINED_RESIZE_POLICY
+        (set in the controller) allows columns to exceed the visible width so the
+        built-in bar activates and scrolls all the way to the last column.
+      -->
+      <TableView fx:id="emp_table"
+                 layoutX="17.0" layoutY="102.0"
+                 prefHeight="489.0" prefWidth="864.0"
+                 AnchorPane.leftAnchor="17.0"
+                 AnchorPane.rightAnchor="19.0"
+                 AnchorPane.topAnchor="102.0"
+                 AnchorPane.bottomAnchor="99.0">
+         <columns>
+            <TableColumn fx:id="empNumColumn"            text="Employee #"             minWidth="80.0"  prefWidth="90.0"/>
+            <TableColumn fx:id="lastNameColumn"          text="Last Name"              minWidth="90.0"  prefWidth="110.0"/>
+            <TableColumn fx:id="firstNameColumn"         text="First Name"             minWidth="90.0"  prefWidth="110.0"/>
+            <TableColumn fx:id="birthdayColumn"          text="Birthday"               minWidth="80.0"  prefWidth="90.0"/>
+            <TableColumn fx:id="addressColumn"           text="Address"                minWidth="120.0" prefWidth="220.0"/>
+            <TableColumn fx:id="phoneNumberColumn"       text="Phone Number"           minWidth="100.0" prefWidth="110.0"/>
+            <TableColumn fx:id="sssColumn"               text="SSS #"                  minWidth="100.0" prefWidth="110.0"/>
+            <TableColumn fx:id="philHealthColumn"        text="PhilHealth #"           minWidth="110.0" prefWidth="120.0"/>
+            <TableColumn fx:id="tinColumn"               text="TIN #"                  minWidth="120.0" prefWidth="130.0"/>
+            <TableColumn fx:id="pagIbigColumn"           text="Pag-Ibig #"             minWidth="110.0" prefWidth="120.0"/>
+            <TableColumn fx:id="statusColumn"            text="Status"                 minWidth="80.0"  prefWidth="90.0"/>
+            <TableColumn fx:id="positionColumn"          text="Position"               minWidth="100.0" prefWidth="160.0"/>
+            <TableColumn fx:id="supervisorColumn"        text="Immediate Supervisor"   minWidth="120.0" prefWidth="160.0"/>
+            <TableColumn fx:id="basicSalaryColumn"       text="Basic Salary"           minWidth="90.0"  prefWidth="100.0"/>
+            <TableColumn fx:id="riceSubsidyColumn"       text="Rice Subsidy"           minWidth="85.0"  prefWidth="95.0"/>
+            <TableColumn fx:id="phoneAllowanceColumn"    text="Phone Allowance"        minWidth="100.0" prefWidth="110.0"/>
+            <TableColumn fx:id="clothingAllowanceColumn" text="Clothing Allowance"     minWidth="110.0" prefWidth="120.0"/>
+            <TableColumn fx:id="grossSemiMonthlyColumn"  text="Gross Semi-monthly Rate" minWidth="130.0" prefWidth="150.0"/>
+            <TableColumn fx:id="hourlyRateColumn"        text="Hourly Rate"            minWidth="85.0"  prefWidth="95.0"/>
+         </columns>
+      </TableView>
    </children>
 </AnchorPane>

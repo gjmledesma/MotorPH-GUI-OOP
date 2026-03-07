@@ -1,0 +1,113 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   employee_payslip.css  —  payslip modal window
+   ═══════════════════════════════════════════════════════════════════════ */
+
+#root {
+    -fx-background-color: #E8ECF1;
+}
+
+/* ── Card ─────────────────────────────────────────────────────────────── */
+.ps-card {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 10;
+    -fx-border-color: #CDD5E0;
+    -fx-border-width: 1;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 14, 0, 0, 3);
+}
+
+/* ── Header ──────────────────────────────────────────────────────────── */
+.ps-header {
+    -fx-background-color: #BC162D;
+    -fx-background-radius: 10 10 0 0;
+}
+.ps-company {
+    -fx-text-fill: #FFFFFF;
+}
+.ps-doc-title {
+    -fx-text-fill: #A8C4DD;
+    -fx-letter-spacing: 2px;
+}
+.ps-period {
+    -fx-text-fill: #D0E4F5;
+}
+
+/* ── Dividers ────────────────────────────────────────────────────────── */
+.ps-divider {
+    -fx-background-color: #DDE1E9;
+}
+.ps-inner-sep {
+    -fx-background-color: #EAEDF2;
+    -fx-opacity: 0.8;
+}
+.ps-col-div {
+    -fx-background-color: #DDE1E9;
+    -fx-pref-width: 1;
+}
+
+/* ── Employee info section ───────────────────────────────────────────── */
+.ps-section-bg {
+    -fx-background-color: #F7F9FC;
+}
+.ps-section-title {
+    -fx-text-fill: #1A3C5E;
+    letter-spacing: 1px;
+}
+.ps-sub-title {
+    -fx-text-fill: #7B8BA8;
+}
+.ps-key {
+    -fx-text-fill: #8A94A8;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 11;
+}
+.ps-val {
+    -fx-text-fill: #1E2A3A;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 11;
+}
+
+/* ── Pay columns ─────────────────────────────────────────────────────── */
+.ps-pay-col {
+    -fx-background-color: transparent;
+}
+.ps-earn {
+    -fx-text-fill: #1B5E20;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 11;
+    -fx-alignment: CENTER_RIGHT;
+}
+.ps-deduct {
+    -fx-text-fill: #B71C1C;
+    -fx-font-family: "Poppins Regular";
+    -fx-font-size: 11;
+    -fx-alignment: CENTER_RIGHT;
+}
+.ps-total-key {
+    -fx-text-fill: #1A2B45;
+}
+.ps-total-earn {
+    -fx-text-fill: #1B5E20;
+    -fx-min-width: 90;
+    -fx-alignment: CENTER_RIGHT;
+}
+.ps-total-deduct {
+    -fx-text-fill: #B71C1C;
+    -fx-min-width: 90;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* ── Net pay bar ─────────────────────────────────────────────────────── */
+.ps-net-bar {
+    -fx-background-color: #EBF5FB;
+    -fx-background-radius: 0 0 10 10;
+}
+.ps-net-key {
+    -fx-text-fill: #1A3C5E;
+}
+.ps-net-amount {
+    -fx-text-fill: #0D47A1;
+    -fx-min-width: 160;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-effect: dropshadow(gaussian, rgba(13,71,161,0.15), 4, 0, 0, 1);
+}

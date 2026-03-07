@@ -15,8 +15,8 @@ public class MainApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(MainApplication.class.getResource("/org/example/motorphui/landing_page.fxml"));
 
-        // Set default window size to 900x600 here
-        Scene scene = new Scene(fxmlLoader.load(), 900, 600);
+        // Set default window size to 1200x700 here
+        Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
         
         stage.setTitle("MotorPH Employee Payroll System");
 

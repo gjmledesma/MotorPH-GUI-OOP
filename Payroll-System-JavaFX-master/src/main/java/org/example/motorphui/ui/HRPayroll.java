@@ -1,6 +1,6 @@
 package org.example.motorphui.ui;
 
-import org.example.motorphui.dao.AllEmployeeDAO;
+import org.example.motorphui.model.AllEmployeePublic;
 import org.example.motorphui.model.AllEmployee;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -68,7 +68,7 @@ public class HRPayroll {
                     String grossSemiMonthlyRate = data[17];
                     String hourlyRate = data[18];
 
-                    AllEmployee employee = new AllEmployeeDAO(
+                    AllEmployee employee = new AllEmployeePublic(
                             empNumber,          // employeeNumber
                             lastName,           // lastName
                             firstName,         // firstName
@@ -113,6 +113,7 @@ public class HRPayroll {
             Stage stage = new Stage();
             stage.setTitle("Payroll Slip");
             stage.setScene(new Scene(root));
+            stage.setResizable(false);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
