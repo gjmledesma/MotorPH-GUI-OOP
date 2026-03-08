@@ -1,30 +1,27 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package org.example.motorphui.ui;
 
-import org.example.motorphui.model.AllEmployee;
-import org.example.motorphui.model.SalaryTaxCalculator;
-import org.example.motorphui.dao.AttendanceDAO;
-import org.example.motorphui.service.AttendanceService;
-import org.example.motorphui.service.SalaryTaxCalculatorService;
+import java.text.NumberFormat;
+import java.util.Locale;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.AnchorPane;
-
-import java.text.NumberFormat;
-import java.util.Locale;
+import org.example.motorphui.dao.AttendanceDAO;
+import org.example.motorphui.model.AllEmployee;
+import org.example.motorphui.model.SalaryTaxCalculator;
+import org.example.motorphui.service.AttendanceService;
+import org.example.motorphui.service.SalaryTaxCalculatorService;
 
 /**
- * Controller for the HR Payslip panel.
  *
- * Gross Pay  = (Hours Worked × Hourly Rate) + Rice Subsidy + Phone Allowance + Clothing Allowance
- * Deductions = SSS + PhilHealth + Pag-Ibig + Withholding Tax
- * Net Pay    = Gross Pay − Total Deductions
- *
- * Deductions are computed against Basic Salary (not gross) per Philippine payroll rules.
+ * @author gabrielledesma
  */
-public class HRPayslip {
+public class FinancePayslip {
 
     // ── Services ─────────────────────────────────────────────────────────────
 

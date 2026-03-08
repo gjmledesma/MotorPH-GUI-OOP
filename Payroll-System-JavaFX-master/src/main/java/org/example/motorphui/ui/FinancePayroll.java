@@ -1,7 +1,12 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
 package org.example.motorphui.ui;
 
-import org.example.motorphui.model.AllEmployeePublic;
-import org.example.motorphui.model.AllEmployee;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,11 +17,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
+import org.example.motorphui.model.AllEmployee;
+import org.example.motorphui.model.AllEmployeePublic;
 
-public class HRPayroll {
+/**
+ *
+ * @author gabrielledesma
+ */
+public class FinancePayroll {
 
     @FXML
     private TableView<AllEmployee> emp_table;
@@ -107,7 +115,7 @@ public class HRPayroll {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_payslip.fxml"));
             Parent root = loader.load();
 
-            HRPayslip controller = loader.getController();
+            FinancePayslip controller = loader.getController();
             controller.setEmployee(employee);
 
             Stage stage = new Stage();
@@ -180,16 +188,3 @@ public class HRPayroll {
         }
     }
 }
-    // Initialization method to set up the TableView and its columns
-    // Set the columns' cell value factories (this binds each column to a property in the Employee class)
-    // Then load the employee data into the table
-
-    // Create a method for the "Generate Payroll" Button
-    // Get the SELECTED employee from the TableView
-    // This is where the logic for generating the payroll will go
-    // Generate a payroll slip for the selected employee
-
-    // Example: generatePayrollForEmployee(selectedEmployee);
-    // After generating the payroll, display it in a new window (hr_payslip.fxml)
-
-    // If no employee is selected, show a message to the user

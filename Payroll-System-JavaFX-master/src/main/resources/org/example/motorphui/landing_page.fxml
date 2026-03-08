@@ -12,7 +12,7 @@
 <AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" scaleShape="false" stylesheets="@css/landing_page.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.LandingPage">
 
 <children>
-      <ImageView fitHeight="785.0" fitWidth="1199.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="785.0" fitWidth="1200.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@images/LandingPageBG2.png" />
          </image>
@@ -30,7 +30,7 @@
                        <Font name="Century Gothic" size="20.0" />
                    </font>
                </Button>
-               <Button fx:id="hr_button" mnemonicParsing="false" onAction="#handleHRButton" prefHeight="44.0" prefWidth="333.0" snapToPixel="false" style="-fx-background-color: C5172E;" text="Human Resources / Admin">
+               <Button fx:id="hr_button" mnemonicParsing="false" onAction="#handleHRButton" prefHeight="44.0" prefWidth="333.0" snapToPixel="false" style="-fx-background-color: C5172E;" text="Human Resources">
                    <font>
                        <Font name="Century Gothic" size="20.0" />
                    </font>
@@ -40,7 +40,7 @@
                        <Font name="Century Gothic" size="20.0" />
                    </font>
                </Button>
-               <Button fx:id="it_button" mnemonicParsing="false" onAction="#handleITButton" prefHeight="50.0" prefWidth="333.0" snapToPixel="false" style="-fx-background-color: C5172E;" text="IT" textFill="WHITE">
+               <Button fx:id="it_button" mnemonicParsing="false" onAction="#handleITButton" prefHeight="50.0" prefWidth="333.0" snapToPixel="false" style="-fx-background-color: C5172E;" text="IT / Admin" textFill="WHITE">
                    <font>
                        <Font name="Century Gothic" size="20.0" />
                    </font>

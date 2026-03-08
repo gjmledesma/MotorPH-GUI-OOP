@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<StackPane id="root" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/it_login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.ITLogin">
+<StackPane id="root" fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" stylesheets="@css/it_login.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.ITAdminLogin">
 
     <VBox id="container" fx:id="container" alignment="TOP_CENTER" maxHeight="839.0" maxWidth="671.0" spacing="30.0" style="-fx-padding: 20;">
 
@@ -66,6 +66,5 @@
                 <font><Font name="Century Gothic" size="18.0" /></font>
             </Label>
         </VBox>
-
     </VBox>
 </StackPane>

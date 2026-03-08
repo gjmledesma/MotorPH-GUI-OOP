@@ -10,7 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class ITLogin extends AuthenticationDAO {
+public class ITAdminLogin extends AuthenticationDAO {
 
     @FXML
     private Button login_button;
@@ -65,10 +65,10 @@ public class ITLogin extends AuthenticationDAO {
         }
 
         // Authenticate user
-        if (AuthenticationDAO.authenticateHR(username, password)) {
+        if (AuthenticationDAO.authenticateIT(username, password)) {
 
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_dashboard.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/it_dashboard.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) login_button.getScene().getWindow();

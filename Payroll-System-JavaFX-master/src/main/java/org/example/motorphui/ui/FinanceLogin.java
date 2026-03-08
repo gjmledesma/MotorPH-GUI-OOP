@@ -65,10 +65,9 @@ public class FinanceLogin extends AuthenticationDAO {
         }
 
         // Authenticate user
-        if (AuthenticationDAO.authenticateHR(username, password)) {
-
+        if (AuthenticationDAO.authenticateFinance(username, password)) {
             try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/hr_dashboard.fxml"));
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/finance_dashboard.fxml"));
                 Parent root = loader.load();
 
                 Stage stage = (Stage) login_button.getScene().getWindow();
