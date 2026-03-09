@@ -40,7 +40,7 @@
                        <Font name="Century Gothic" size="20.0" />
                    </font>
                </Button>
-               <Button fx:id="it_button" mnemonicParsing="false" onAction="#handleITButton" prefHeight="50.0" prefWidth="333.0" snapToPixel="false" style="-fx-background-color: C5172E;" text="IT / Admin" textFill="WHITE">
+               <Button fx:id="it_button" mnemonicParsing="false" onAction="#handleITButton" prefHeight="50.0" prefWidth="333.0" snapToPixel="false" style="-fx-background-color: C5172E;" text="IT" textFill="WHITE">
                    <font>
                        <Font name="Century Gothic" size="20.0" />
                    </font>

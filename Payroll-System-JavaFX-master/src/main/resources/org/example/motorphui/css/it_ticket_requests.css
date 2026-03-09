@@ -1,0 +1,90 @@
+/* ── it_ticket_requests.css ───────────────────────────────────────────────── */
+
+.root {
+    -fx-background-color: #F2F4F7;
+}
+
+.section-label {
+    -fx-text-fill: #2C2F3A;
+}
+
+.form-label {
+    -fx-text-fill: #444;
+}
+
+/* Refresh button */
+.btn-refresh {
+    -fx-background-color: #6C757D;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-refresh:hover {
+    -fx-background-color: #5A6268;
+}
+
+/* Update button */
+.btn-update {
+    -fx-background-color: #C5172E;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-update:hover {
+    -fx-background-color: #F51835;
+}
+
+/* Table */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #DEE2E6;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+.table-view .column-header-background {
+    -fx-background-color: #F8F9FA;
+}
+.table-view .column-header .label {
+    -fx-font-family: "Poppins SemiBold";
+    -fx-font-size: 12px;
+    -fx-text-fill: #495057;
+}
+.table-row-cell:selected {
+    -fx-background-color: #FDEEF1;
+}
+.table-row-cell:selected .text {
+    -fx-fill: #2C2F3A;
+}
+
+/* Detail card */
+.detail-card {
+    -fx-background-color: white;
+    -fx-border-color: #DEE2E6;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+.detail-key {
+    -fx-text-fill: #6C757D;
+    -fx-font-size: 12px;
+}
+.detail-val {
+    -fx-text-fill: #2C2F3A;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+.detail-desc {
+    -fx-background-color: #F8F9FA;
+    -fx-border-color: #DEE2E6;
+    -fx-font-size: 12px;
+}
+.inner-sep {
+    -fx-opacity: 0.5;
+}
+
+/* Update card */
+.update-card {
+    -fx-background-color: white;
+    -fx-border-color: #DEE2E6;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}

@@ -19,7 +19,7 @@ public class EmployeeDashboard {
     @FXML
     private AnchorPane contentPane;
     @FXML
-    private Button profile_button, attendance_button, viewsalary_button, leaveform_button;
+    private Button profile_button, attendance_button, viewsalary_button, leaveform_button, fileticket_button;
     @FXML
     private Button logout_button;
 
@@ -75,7 +75,12 @@ public class EmployeeDashboard {
         loadView("/org/example/motorphui/employee_leave_form.fxml");
         setActiveButton(leaveform_button);
     }
-
+    @FXML
+    private void onFileTicketClicked() {
+        loadView("/org/example/motorphui/employee_ticket_requests.fxml");
+        setActiveButton(fileticket_button);
+    }
+    
     private void loadView(String fxml) {
         try {
             AnchorPane pane = FXMLLoader.load(getClass().getResource(fxml));
@@ -118,6 +123,7 @@ public class EmployeeDashboard {
         attendance_button.getStyleClass().remove("menu-button-active");
         viewsalary_button.getStyleClass().remove("menu-button-active");
         leaveform_button.getStyleClass().remove("menu-button-active");
+        fileticket_button.getStyleClass().remove("menu-button-active");
         logout_button.getStyleClass().remove("menu-button-active");
 
         if (!active.getStyleClass().contains("menu-button-active")) {

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root"
+            maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="700.0" prefWidth="900.0"
+            stylesheets="@css/it_ticket_requests.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.motorphui.ui.ITAdminTicketRequests">
+
+    <children>
+
+        <!-- ── Page title + Refresh ──────────────────────────────────────── -->
+        <Label fx:id="ticketrequests_label" layoutX="40.0" layoutY="35.0"
+               text="Ticket Requests">
+            <font><Font name="Poppins Bold" size="36.0"/></font>
+        </Label>
+
+        <Button fx:id="refresh_button" layoutX="790.0" layoutY="45.0"
+                onAction="#handleRefresh" prefHeight="30.0" prefWidth="90.0"
+                styleClass="btn-refresh" text="Refresh">
+            <font><Font name="Poppins Regular" size="12.0"/></font>
+        </Button>
+
+        <Separator layoutX="40.0" layoutY="92.0" prefWidth="820.0"/>
+
+        <!-- ── All Tickets TableView ─────────────────────────────────────── -->
+        <Label layoutX="40.0" layoutY="104.0" styleClass="section-label"
+               text="All Submitted Tickets">
+            <font><Font name="Poppins SemiBold" size="14.0"/></font>
+        </Label>
+
+        <TableView fx:id="ticket_table"
+                   layoutX="40.0" layoutY="128.0"
+                   prefHeight="270.0" prefWidth="820.0">
+            <columns>
+                <TableColumn fx:id="ticketIdColumn"   prefWidth="135.0"  text="Ticket ID"/>
+                <TableColumn fx:id="empIdColumn"      prefWidth="85.0"   text="Emp ID"/>
+                <TableColumn fx:id="lastNameColumn"   prefWidth="100.0"  text="Last Name"/>
+                <TableColumn fx:id="firstNameColumn"  prefWidth="100.0"  text="First Name"/>
+                <TableColumn fx:id="categoryColumn"   prefWidth="125.0"  text="Category"/>
+                <TableColumn fx:id="subjectColumn"    prefWidth="155.0"  text="Subject"/>
+                <TableColumn fx:id="dateFiledColumn"  prefWidth="95.0"   text="Date Filed"/>
+                <TableColumn fx:id="statusColumn"     prefWidth="93.0"   text="Status"/>
+            </columns>
+            <placeholder>
+                <Label text="No tickets on record."/>
+            </placeholder>
+        </TableView>
+
+        <Separator layoutX="40.0" layoutY="408.0" prefWidth="820.0"/>
+
+        <!-- ── Detail + Update Panel ─────────────────────────────────────── -->
+        <Label layoutX="40.0" layoutY="420.0" styleClass="section-label"
+               text="Ticket Detail &amp; Update">
+            <font><Font name="Poppins SemiBold" size="14.0"/></font>
+        </Label>
+
+        <!-- Detail info grid (left) + update controls (right) -->
+        <HBox layoutX="40.0" layoutY="446.0" prefWidth="820.0" spacing="24.0">
+
+            <!-- LEFT: ticket details -->
+            <VBox spacing="0" HBox.hgrow="ALWAYS" styleClass="detail-card">
+                <padding><Insets top="10.0" right="14.0" bottom="10.0" left="14.0"/></padding>
+
+                <GridPane hgap="10.0" vgap="6.0">
+                    <columnConstraints>
+                        <ColumnConstraints prefWidth="95.0"/>
+                        <ColumnConstraints hgrow="ALWAYS"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
+
+                    <!-- Ticket ID -->
+                    <Label text="Ticket ID:" styleClass="detail-key"
+                           GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                    <Label fx:id="detail_ticket_id_label" text="—" styleClass="detail-val"
+                           GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                    <!-- Employee -->
+                    <Label text="Employee:" styleClass="detail-key"
+                           GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                    <Label fx:id="detail_employee_label" text="—" styleClass="detail-val"
+                           wrapText="true"
+                           GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                    <!-- Category -->
+                    <Label text="Category:" styleClass="detail-key"
+                           GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Label fx:id="detail_category_label" text="—" styleClass="detail-val"
+                           GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                    <!-- Subject -->
+                    <Label text="Subject:" styleClass="detail-key"
+                           GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <Label fx:id="detail_subject_label" text="—" styleClass="detail-val"
+                           wrapText="true"
+                           GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+                </GridPane>
+
+                <Separator styleClass="inner-sep">
+                    <VBox.margin><Insets top="8.0" bottom="6.0"/></VBox.margin>
+                </Separator>
+
+                <Label styleClass="detail-key" text="Description:">
+                    <VBox.margin><Insets bottom="4.0"/></VBox.margin>
+                </Label>
+                <TextArea fx:id="detail_description_area"
+                          editable="false" prefHeight="80.0" wrapText="true"
+                          styleClass="detail-desc"/>
+            </VBox>
+
+            <!-- RIGHT: update controls -->
+            <VBox spacing="12.0" prefWidth="240.0" styleClass="update-card">
+                <padding><Insets top="10.0" right="14.0" bottom="10.0" left="14.0"/></padding>
+
+                <Label styleClass="section-label" text="Update Ticket">
+                    <font><Font name="Poppins SemiBold" size="13.0"/></font>
+                </Label>
+
+                <VBox spacing="4.0">
+                    <Label styleClass="form-label" text="Set Status">
+                        <font><Font name="Poppins Regular" size="12.0"/></font>
+                    </Label>
+                    <ComboBox fx:id="status_combo" prefWidth="212.0"
+                              promptText="Choose status..."/>
+                </VBox>
+
+                <VBox spacing="4.0">
+                    <Label styleClass="form-label" text="IT Remarks">
+                        <font><Font name="Poppins Regular" size="12.0"/></font>
+                    </Label>
+                    <TextField fx:id="remarks_field" prefWidth="212.0"
+                               promptText="Optional note to employee..."/>
+                </VBox>
+
+                <Button fx:id="update_button" onAction="#handleUpdate"
+                        prefHeight="38.0" prefWidth="212.0"
+                        styleClass="btn-update" text="Update Ticket">
+                    <font><Font name="Poppins SemiBold" size="13.0"/></font>
+                </Button>
+
+            </VBox>
+
+        </HBox>
+
+    </children>
+</AnchorPane>

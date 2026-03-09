@@ -42,6 +42,11 @@
                   <Font name="Poppins Regular" size="20.0" />
                </font>
             </Button>
+            <Button fx:id="fileticket_button" alignment="CENTER" mnemonicParsing="false" onAction="#onFileTicketClicked" prefHeight="45.0" prefWidth="299.0" styleClass="menu-button" text="Ticket Requests">
+               <font>
+                  <Font name="Poppins Regular" size="20.0" />
+               </font>
+            </Button>
             <Button fx:id="logout_button" alignment="CENTER" mnemonicParsing="false" onAction="#onLogoutClicked" prefHeight="45.0" prefWidth="299.0" styleClass="menu-button" text="Logout">
                <font>
                   <Font name="Poppins Regular" size="20.0" />

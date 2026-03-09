@@ -22,38 +22,20 @@ public class ITAdminDashboard {
     @FXML
     private AnchorPane contentPane;
     @FXML
-    private Button emp_button, payroll_button, leave_button, attendance_button;
+    private Button tickets_button;
     @FXML
     private Button logout_button;
 
     @FXML
     public void initialize() {
-        loadView("/org/example/motorphui/hr_employee_view.fxml");
-        setActiveButton(emp_button);
+        loadView("/org/example/motorphui/it_ticket_requests.fxml");
+        setActiveButton(tickets_button);
     }
 
     @FXML
-    private void onEmployeesClicked() {
-        loadView("/org/example/motorphui/hr_employee_view.fxml");
-        setActiveButton(emp_button);
-    }
-
-    @FXML
-    private void onPayrollClicked() {
-        loadView("/org/example/motorphui/hr_payroll.fxml");
-        setActiveButton(payroll_button);
-    }
-
-    @FXML
-    private void onLeaveClicked() {
-        loadView("/org/example/motorphui/leave_management.fxml");
-        setActiveButton(leave_button);
-    }
-
-    @FXML
-    private void onAttendanceClicked() {
-        loadView("/org/example/motorphui/hr_attendance.fxml");
-        setActiveButton(attendance_button);
+    private void onTicketClicked() {
+        loadView("/org/example/motorphui/it_ticket_requests.fxml");
+        setActiveButton(tickets_button);
     }
 
     private void loadView(String fxml) {
@@ -73,11 +55,8 @@ public class ITAdminDashboard {
     }
 
     private void setActiveButton(Button active) {
-        emp_button.getStyleClass().remove("menu-button-active");
-        payroll_button.getStyleClass().remove("menu-button-active");
-        leave_button.getStyleClass().remove("menu-button-active");
+        tickets_button.getStyleClass().remove("menu-button-active");
         logout_button.getStyleClass().remove("menu-button-active");
-        attendance_button.getStyleClass().remove("menu-button-active");
 
         if (!active.getStyleClass().contains("menu-button-active")) {
             active.getStyleClass().add("menu-button-active");

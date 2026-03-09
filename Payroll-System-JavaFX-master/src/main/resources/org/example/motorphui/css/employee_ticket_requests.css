@@ -1,0 +1,68 @@
+/* ── employee_ticket_requests.css ─────────────────────────────────────────── */
+
+.root {
+    -fx-background-color: #F2F4F7;
+}
+
+/* Section headings */
+.section-label {
+    -fx-text-fill: #2C2F3A;
+}
+
+/* Employee name / ID strip */
+.emp-name-label {
+    -fx-text-fill: #2C2F3A;
+    -fx-font-weight: bold;
+}
+.emp-id-label {
+    -fx-text-fill: #6C757D;
+}
+
+/* Form labels */
+.form-label {
+    -fx-text-fill: #444;
+}
+
+/* Submit button */
+.btn-submit {
+    -fx-background-color: #C5172E;
+    -fx-text-fill: white;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-submit:hover {
+    -fx-background-color: #F51835;
+}
+
+/* Clear button */
+.btn-clear {
+    -fx-background-color: #E0E0E0;
+    -fx-text-fill: #333;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+.btn-clear:hover {
+    -fx-background-color: #CCCCCC;
+}
+
+/* Table */
+.table-view {
+    -fx-background-color: white;
+    -fx-border-color: #DEE2E6;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+.table-view .column-header-background {
+    -fx-background-color: #F8F9FA;
+}
+.table-view .column-header .label {
+    -fx-font-family: "Poppins SemiBold";
+    -fx-font-size: 12px;
+    -fx-text-fill: #495057;
+}
+.table-row-cell:selected {
+    -fx-background-color: #FDEEF1;
+}
+.table-row-cell:selected .text {
+    -fx-fill: #2C2F3A;
+}

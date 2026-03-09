@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="root"
+            maxHeight="-Infinity" maxWidth="-Infinity"
+            minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="700.0" prefWidth="900.0"
+            stylesheets="@css/employee_ticket_requests.css"
+            xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.motorphui.ui.EmployeeTicketRequests">
+
+    <children>
+
+        <!-- ── Page title ────────────────────────────────────────────────── -->
+        <Label fx:id="ticketrequests_label" layoutX="40.0" layoutY="35.0"
+               text="Ticket Requests">
+            <font><Font name="Poppins Bold" size="36.0"/></font>
+        </Label>
+
+        <!-- ── Employee info strip ───────────────────────────────────────── -->
+        <VBox layoutX="40.0" layoutY="92.0" spacing="2.0">
+            <Label fx:id="emp_name_label" styleClass="emp-name-label"
+                   text="Employee Name">
+                <font><Font name="Poppins SemiBold" size="15.0"/></font>
+            </Label>
+            <Label fx:id="emp_id_label" styleClass="emp-id-label" text="ID: 00000">
+                <font><Font name="Poppins Regular" size="12.0"/></font>
+            </Label>
+        </VBox>
+
+        <Separator layoutX="40.0" layoutY="140.0" prefWidth="820.0"/>
+
+        <!-- ── Section: New Ticket Form ──────────────────────────────────── -->
+        <Label layoutX="40.0" layoutY="156.0" styleClass="section-label"
+               text="File a New Ticket">
+            <font><Font name="Poppins SemiBold" size="14.0"/></font>
+        </Label>
+
+        <!-- Row 1: Category + Subject -->
+        <HBox alignment="CENTER_LEFT" layoutX="40.0" layoutY="182.0" spacing="20.0">
+
+            <VBox spacing="4.0">
+                <Label styleClass="form-label" text="Category">
+                    <font><Font name="Poppins Regular" size="12.0"/></font>
+                </Label>
+                <ComboBox fx:id="category_combo" prefWidth="230.0"
+                          promptText="Select category..."/>
+            </VBox>
+
+            <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                <Label styleClass="form-label" text="Subject">
+                    <font><Font name="Poppins Regular" size="12.0"/></font>
+                </Label>
+                <TextField fx:id="subject_field" prefWidth="560.0"
+                           promptText="Brief summary of your issue..."/>
+            </VBox>
+
+        </HBox>
+
+        <!-- Row 2: Description -->
+        <VBox layoutX="40.0" layoutY="260.0" spacing="4.0">
+            <Label styleClass="form-label" text="Description">
+                <font><Font name="Poppins Regular" size="12.0"/></font>
+            </Label>
+            <TextArea fx:id="description_area" prefHeight="90.0" prefWidth="820.0"
+                      promptText="Describe the problem in detail — include steps to reproduce, error messages, affected system, etc."
+                      wrapText="true"/>
+        </VBox>
+
+        <!-- Row 3: Action buttons -->
+        <HBox layoutX="40.0" layoutY="373.0" spacing="12.0">
+            <Button fx:id="submit_button" onAction="#handleSubmit"
+                    prefHeight="38.0" prefWidth="160.0"
+                    styleClass="btn-submit" text="Submit Ticket">
+                <font><Font name="Poppins SemiBold" size="13.0"/></font>
+            </Button>
+            <Button fx:id="clear_button" onAction="#handleClear"
+                    prefHeight="38.0" prefWidth="90.0"
+                    styleClass="btn-clear" text="Clear">
+                <font><Font name="Poppins Regular" size="13.0"/></font>
+            </Button>
+        </HBox>
+
+        <Separator layoutX="40.0" layoutY="426.0" prefWidth="820.0"/>
+
+        <!-- ── Section: My Ticket History ────────────────────────────────── -->
+        <Label layoutX="40.0" layoutY="438.0" styleClass="section-label"
+               text="My Ticket History">
+            <font><Font name="Poppins SemiBold" size="14.0"/></font>
+        </Label>
+
+        <TableView fx:id="history_table"
+                   layoutX="40.0" layoutY="462.0"
+                   prefHeight="205.0" prefWidth="820.0">
+            <columns>
+                <TableColumn fx:id="ticketIdColumn"   prefWidth="140.0" text="Ticket ID"/>
+                <TableColumn fx:id="categoryColumn"   prefWidth="140.0" text="Category"/>
+                <TableColumn fx:id="subjectColumn"    prefWidth="210.0" text="Subject"/>
+                <TableColumn fx:id="dateFiledColumn"  prefWidth="100.0" text="Date Filed"/>
+                <TableColumn fx:id="statusColumn"     prefWidth="100.0" text="Status"/>
+                <TableColumn fx:id="remarksColumn"    prefWidth="128.0" text="IT Remarks"/>
+            </columns>
+            <placeholder>
+                <Label text="No tickets filed yet."/>
+            </placeholder>
+        </TableView>
+
+    </children>
+</AnchorPane>

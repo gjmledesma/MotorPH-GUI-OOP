@@ -17,7 +17,7 @@
   Loaded into the HR dashboard content area and populated via HRPayslip.setEmployee().
 -->
 
-<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="860.0" stylesheets="@css/payslip.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.HRPayslip">
+<AnchorPane fx:id="root" prefHeight="720.0" prefWidth="860.0" stylesheets="@css/payslip.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.motorphui.ui.FinancePayslip">
 
   <children>
 
