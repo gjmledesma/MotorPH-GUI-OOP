@@ -14,15 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * DAO for motorph_leave_records.csv.
+ * CSV-backed implementation of {@link ILeaveDAO}.
  *
- * CSV location (place here so it is writable at runtime):
- *   src/main/resources/org/example/motorphui/data/motorph_leave_records.csv
- *
- * CSV columns (header row included):
- *   Leave ID,Last Name,First Name,Start Date,End Date,Days,Leave Type,Reason,Approved?
+ * OOP PRINCIPLES DEMONSTRATED:
+ *   INHERITANCE   — Extends BaseDAO, inheriting file-resolution helpers.
+ *   ABSTRACTION   — Implements ILeaveDAO; callers depend on the interface.
+ *   ENCAPSULATION — File paths and parsing logic are private.
  */
-public class LeaveRequestDAO {
+public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
 
     private static final String CSV_RESOURCE_PATH =
             "/org/example/motorphui/data/motorph_leave_records.csv";
@@ -33,12 +32,12 @@ public class LeaveRequestDAO {
     private static final DateTimeFormatter DATE_FMT =
             DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
-    // ── Read ──────────────────────────────────────────────────────────────────
+    // ── ILeaveDAO implementation ──────────────────────────────────────────────
 
-    /** Returns every leave request in the CSV. */
+    @Override
     public ObservableList<LeaveRequest> getAllLeaveRequests() {
         ObservableList<LeaveRequest> list = FXCollections.observableArrayList();
-        try (BufferedReader reader = openReader()) {
+        try (BufferedReader reader = openReader(CSV_RESOURCE_PATH)) {
             if (reader == null) return list;
             String line;
             boolean isHeader = true;
@@ -54,36 +53,25 @@ public class LeaveRequestDAO {
         return list;
     }
 
-    /** Returns only the requests belonging to the given employee ID. */
+    @Override
     public ObservableList<LeaveRequest> getRequestsForEmployee(String empId) {
         ObservableList<LeaveRequest> list = FXCollections.observableArrayList();
         for (LeaveRequest r : getAllLeaveRequests()) {
-            // Leave ID format: LV-<empId>-<sequence>
-            if (r.getLeaveId().startsWith("LV-" + empId + "-")) {
-                list.add(r);
-            }
+            if (r.getLeaveId().startsWith("LV-" + empId + "-")) list.add(r);
         }
         return list;
     }
 
-    // ── Write ─────────────────────────────────────────────────────────────────
-
-    /**
-     * Appends a new leave request to the CSV.
-     * Auto-generates a Leave ID and calculates the number of working days.
-     *
-     * @return the saved {@link LeaveRequest}, or {@code null} on failure.
-     */
+    @Override
     public LeaveRequest submitLeaveRequest(String empId, String lastName, String firstName,
                                            String startDate, String endDate,
                                            String leaveType, String reason) {
         File csv = resolveOrCreateFile();
         if (csv == null) return null;
 
-        String leaveId  = generateLeaveId(empId, csv);
-        String days     = calculateDays(startDate, endDate);
+        String leaveId = generateLeaveId(empId);
+        String days    = calculateDays(startDate, endDate);
 
-        // status starts as Pending
         String newRow = String.join(",",
                 leaveId, lastName, firstName, startDate, endDate,
                 days, leaveType, escapeField(reason), "Pending");
@@ -96,20 +84,11 @@ public class LeaveRequestDAO {
             System.err.println("[LeaveRequestDAO] Write error: " + e.getMessage());
             return null;
         }
-
-        return new LeaveRequest(leaveId, lastName, firstName,
-                startDate, endDate, days, leaveType, reason, "Pending");
+        return new LeaveRequest(leaveId, lastName, firstName, startDate, endDate,
+                                days, leaveType, reason, "Pending");
     }
 
-    // ── Update (approve / deny) ───────────────────────────────────────────────
-
-    /**
-     * Updates the "Approved?" field for the given leaveId.
-     * Rewrites the entire CSV.
-     *
-     * @param newStatus  "Approved" or "Denied: <remarks>"
-     * @return {@code true} on success.
-     */
+    @Override
     public boolean updateStatus(String leaveId, String newStatus) {
         File csv = resolveOrCreateFile();
         if (csv == null) return false;
@@ -137,18 +116,7 @@ public class LeaveRequestDAO {
         }
 
         if (!updated) return false;
-
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(csv, StandardCharsets.UTF_8, false))) {
-            for (int i = 0; i < lines.size(); i++) {
-                writer.write(lines.get(i));
-                if (i < lines.size() - 1) writer.newLine();
-            }
-        } catch (IOException e) {
-            System.err.println("[LeaveRequestDAO] Write error (update): " + e.getMessage());
-            return false;
-        }
-
+        rewriteFile(CSV_RESOURCE_PATH, lines);
         return true;
     }
 
@@ -162,24 +130,15 @@ public class LeaveRequestDAO {
                 f[6].trim(), f[7].trim(), f[8].trim());
     }
 
-    /**
-     * Generates the next Leave ID for this employee.
-     * Format: LV-<empId>-<3-digit-sequence>  e.g. LV-10001-001
-     */
-    private String generateLeaveId(String empId, File csv) {
-        ObservableList<LeaveRequest> existing = getRequestsForEmployee(empId);
-        int next = existing.size() + 1;
+    private String generateLeaveId(String empId) {
+        int next = getRequestsForEmployee(empId).size() + 1;
         return String.format("LV-%s-%03d", empId, next);
     }
 
-    /**
-     * Calculates inclusive calendar days between two MM/dd/yyyy dates.
-     * Returns "?" if parsing fails.
-     */
     private String calculateDays(String startDate, String endDate) {
         try {
             LocalDate start = LocalDate.parse(startDate, DATE_FMT);
-            LocalDate end   = LocalDate.parse(endDate, DATE_FMT);
+            LocalDate end   = LocalDate.parse(endDate,   DATE_FMT);
             long days = ChronoUnit.DAYS.between(start, end) + 1;
             return String.valueOf(Math.max(days, 1));
         } catch (Exception e) {
@@ -187,28 +146,14 @@ public class LeaveRequestDAO {
         }
     }
 
-    /** Wraps a field in quotes if it contains a comma. */
     private String escapeField(String field) {
         if (field == null) return "";
         return field.contains(",") ? "\"" + field + "\"" : field;
     }
 
-    private BufferedReader openReader() {
-        InputStream is = getClass().getResourceAsStream(CSV_RESOURCE_PATH);
-        if (is == null) {
-            File f = resolveOrCreateFile();
-            if (f != null && f.exists()) {
-                try { is = new FileInputStream(f); }
-                catch (FileNotFoundException ignored) {}
-            }
-        }
-        if (is == null) return null;
-        return new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-    }
-
     /**
-     * Resolves the CSV to a writable {@link File}.
-     * Creates the file with a header row if it doesn't exist yet.
+     * Resolves the CSV to a writable File, creating it with a header row if
+     * it does not yet exist.
      */
     public File resolveOrCreateFile() {
         try {
@@ -217,8 +162,6 @@ public class LeaveRequestDAO {
                 return new File(url.toURI());
             }
         } catch (Exception ignored) {}
-
-        // File doesn't exist yet — create it in the resources directory via class path
         try {
             URL base = getClass().getResource("/org/example/motorphui/data/");
             if (base != null && "file".equals(base.getProtocol())) {

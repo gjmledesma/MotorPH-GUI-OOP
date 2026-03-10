@@ -1,131 +1,109 @@
 package org.example.motorphui.ui;
 
-import org.example.motorphui.model.AllEmployee;
 import org.example.motorphui.dao.AuthenticationDAO;
+import org.example.motorphui.model.AllEmployee;
 import org.example.motorphui.session.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class EmployeeLogin extends AuthenticationDAO {
+/**
+ * Login controller for Employee users.
+ *
+ * Extends BaseLoginController and adds the Employee-ID field that is unique
+ * to the employee login screen.
+ *
+ * OOP PRINCIPLES DEMONSTRATED:
+ *   INHERITANCE   — Extends BaseLoginController instead of AuthenticationDAO.
+ *   POLYMORPHISM  — Overrides performAuthentication() with three-argument
+ *                   employee authentication (employee ID + username + password),
+ *                   and overrides onLoginSuccess() to load the employee session.
+ *   ENCAPSULATION — employeeid_field is private, accessed only within this class.
+ */
+public class EmployeeLogin extends BaseLoginController {
+
     @FXML
     private TextField employeeid_field;
 
-    @FXML
-    private TextField username_field;
+    // ── Abstract method implementations ───────────────────────────────────────
 
-    @FXML
-    private Button login_button;
-
-    @FXML
-    private Label back_label;
-
-    @FXML
-    private PasswordField password_field;
-
-    @FXML
-    private TextField visible_password_field;
-
-    @FXML
-    private CheckBox show_password_check;
-
-    //@FXML
-    //private Label errorMessage;
-
-    @FXML
-    private void initialize() {
-        password_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!visible_password_field.isFocused()) {
-                visible_password_field.setText(newValue);
-            }
-        });
-
-        visible_password_field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!password_field.isFocused()) {
-                password_field.setText(newValue);
-            }
-        });
-
-        // toggle visibility of password field
-        show_password_check.setOnAction(event -> {
-            boolean show = show_password_check.isSelected();
-            visible_password_field.setVisible(show);
-            visible_password_field.setManaged(show);
-            password_field.setVisible(!show);
-            password_field.setManaged(!show);
-        });
+    @Override
+    protected boolean performAuthentication(String username, String password) {
+        String empId = employeeid_field.getText().trim();
+        if (empId.isEmpty()) return false;
+        return AuthenticationDAO.authenticate(empId, username, password);
     }
 
+    @Override
+    protected String getDashboardFxml() {
+        return "/org/example/motorphui/employee_dashboard.fxml";
+    }
+
+    @Override
+    protected String getDashboardTitle() {
+        return "MotorPH Employee Dashboard";
+    }
+
+    // ── Override initialize to add Employee-ID blank check ────────────────────
+
     @FXML
-    private void handleLoginButton(ActionEvent event) {
-        String empId = employeeid_field.getText();
-        String username = username_field.getText();
+    @Override
+    protected void initialize() {
+        super.initialize();
+        // nothing extra needed — the employee-ID check is handled in
+        // handleLoginButton() via the overridden performAuthentication()
+    }
+
+    // ── Override handleLoginButton to validate employee ID field too ──────────
+
+    @FXML
+    @Override
+    protected void handleLoginButton(ActionEvent event) {
+        String empId    = employeeid_field.getText().trim();
+        String username = username_field.getText().trim();
         String password = password_field.getText();
 
-        if (empId.trim().isEmpty() || username.trim().isEmpty() || password.trim().isEmpty()) {
+        if (empId.isEmpty() || username.isEmpty() || password.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Login Failed", "All fields are required.");
             return;
         }
 
-        // Authenticate user
         if (AuthenticationDAO.authenticate(empId, username, password)) {
-            AllEmployee employee = AuthenticationDAO.getEmployeeData(empId);
-            SessionManager.getInstance().setCurrentEmployee(employee); // ✅ fix: store in session
-
-            try {
-                FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/employee_dashboard.fxml"));
-                Parent root = loader.load();
-
-                EmployeeDashboard dashboardController = loader.getController();
-                dashboardController.loadProfile(employee);
-
-                Stage stage = (Stage) login_button.getScene().getWindow();
-                Scene scene = new Scene(root);
-
-                stage.setMinWidth(1200);
-                stage.setMinHeight(700);
-
-                stage.setWidth(1200);
-                stage.setHeight(700);
-
-                stage.setScene(scene);
-                stage.show();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Error", "Error loading profile screen.");
-            }
+            AllEmployee employee = new AuthenticationDAO().getEmployeeData(empId);
+            SessionManager.getInstance().setCurrentEmployee(employee);
+            loadEmployeeDashboard(employee, event);
         } else {
-            showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid credentials. Please try again.");
+            showAlert(Alert.AlertType.ERROR, "Login Failed",
+                      "Invalid credentials. Please try again.");
         }
     }
 
-    private void showAlert(Alert.AlertType alertType, String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+    // ── Private helper ────────────────────────────────────────────────────────
 
-    @FXML
-    private void handleBackClick(MouseEvent event) {
+    private void loadEmployeeDashboard(AllEmployee employee, ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/landing_page.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/org/example/motorphui/employee_dashboard.fxml"));
             Parent root = loader.load();
 
-            Stage stage = (Stage) back_label.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            EmployeeDashboard dashboardController = loader.getController();
+            dashboardController.loadProfile(employee);
 
+            Stage stage = (Stage) login_button.getScene().getWindow();
+            stage.setMinWidth(1200);
+            stage.setMinHeight(700);
+            stage.setWidth(1200);
+            stage.setHeight(700);
+            stage.setScene(new Scene(root));
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Error loading employee dashboard.");
         }
     }
 }

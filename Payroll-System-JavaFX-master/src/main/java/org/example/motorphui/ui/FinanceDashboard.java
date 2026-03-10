@@ -44,18 +44,6 @@ public class FinanceDashboard {
         setActiveButton(payroll_button);
     }
     
-
-//    @FXML
-//    private void onLeaveClicked() {
-//        loadView("/org/example/motorphui/leave_management.fxml");
-//        setActiveButton(leave_button);
-//    }
-//
-//    @FXML
-//    private void onAttendanceClicked() {
-//        loadView("/org/example/motorphui/hr_attendance.fxml");
-//        setActiveButton(attendance_button);
-
     private void loadView(String fxml) {
         try {
             AnchorPane pane = FXMLLoader.load(getClass().getResource(fxml));

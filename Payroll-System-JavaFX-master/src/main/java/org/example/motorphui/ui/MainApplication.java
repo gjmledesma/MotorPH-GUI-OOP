@@ -19,8 +19,6 @@ public class MainApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 1200, 700);
         
         stage.setTitle("MotorPH Employee Payroll System");
-
-        // Optional: Set a minimum window size so the UI doesn't squish too much when scaled down
         stage.setMinWidth(1200);
         stage.setMinHeight(700);
         

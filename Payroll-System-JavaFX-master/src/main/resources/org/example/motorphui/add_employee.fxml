@@ -155,6 +155,6 @@
       </Label>
       <HBox alignment="CENTER" layoutX="22.0" layoutY="792.0" prefHeight="40.0" prefWidth="560.0" spacing="20.0" />
         <Button fx:id="addEmpButton" layoutX="194.0" layoutY="648.0" mnemonicParsing="false" onAction="#onAddButtonClick" prefHeight="30.0" prefWidth="100.0" text="Add" />
-        <Button fx:id="CancelButton" layoutX="314.0" layoutY="648.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="30.0" prefWidth="100.0" text="Cancel" />
+        <Button fx:id="cancelButton" layoutX="314.0" layoutY="648.0" mnemonicParsing="false" onAction="#handleCancel" prefHeight="30.0" prefWidth="100.0" text="Cancel" />
     </children>
 </AnchorPane>

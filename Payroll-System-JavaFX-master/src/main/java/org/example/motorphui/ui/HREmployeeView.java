@@ -1,6 +1,7 @@
 package org.example.motorphui.ui;
 
-import org.example.motorphui.model.AllEmployeePublic;
+import org.example.motorphui.dao.EmployeeDAOImpl;
+import org.example.motorphui.dao.IEmployeeDAO;
 import org.example.motorphui.model.AllEmployee;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -13,11 +14,21 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-import java.io.*;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.Optional;
+import java.util.Set;
 
+/**
+ * HR Employee View controller.
+ *
+ * Refactored to delegate all CSV reading and writing to {@link EmployeeDAOImpl}
+ * (via the {@link IEmployeeDAO} interface) instead of containing raw file I/O.
+ *
+ * OOP PRINCIPLES DEMONSTRATED:
+ *   ENCAPSULATION — The DAO reference is private; UI logic does not touch CSV files.
+ *   ABSTRACTION   — Depends on IEmployeeDAO, not on the concrete implementation.
+ *   LAYERED ARCHITECTURE — UI layer delegates data operations to DAO layer.
+ */
 public class HREmployeeView {
 
     @FXML private AnchorPane root;
@@ -47,23 +58,18 @@ public class HREmployeeView {
     @FXML private TableColumn<AllEmployee, String> grossSemiMonthlyColumn;
     @FXML private TableColumn<AllEmployee, String> hourlyRateColumn;
 
+    // ── DAO dependency (UI no longer reads/writes CSV directly) ───────────────
+    private final IEmployeeDAO employeeDAO = new EmployeeDAOImpl();
     private final ObservableList<AllEmployee> employeeList = FXCollections.observableArrayList();
 
-    // Classpath path — used for reading only
+    // Kept for backward-compat with AddEmployee / HRViewAndUpdateEmployee
     public static final String EMPLOYEE_DATA_FILE =
             "/org/example/motorphui/data/motorph_employee_data.csv";
-
-    private static final String CSV_HEADER =
-            "Employee #,Last Name,First Name,Birthday,Address,Phone Number," +
-            "SSS #,PhilHealth #,TIN #,Pag-Ibig #,Status,Position," +
-            "Immediate Supervisor,Basic Salary,Rice Subsidy,Phone Allowance," +
-            "Clothing Allowance,Gross Semi-monthly Rate,Hourly Rate";
 
     // ── Init ──────────────────────────────────────────────────────────────────
 
     @FXML
     public void initialize() {
-        // ── Horizontal scroll: UNCONSTRAINED so all 19 columns are reachable ──
         emp_table.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 
         empNumColumn         .setCellValueFactory(new PropertyValueFactory<>("employeeNumber"));
@@ -83,134 +89,38 @@ public class HREmployeeView {
         riceSubsidyColumn    .setCellValueFactory(new PropertyValueFactory<>("riceSubsidy"));
         phoneAllowanceColumn .setCellValueFactory(new PropertyValueFactory<>("phoneAllowance"));
         clothingAllowanceColumn.setCellValueFactory(new PropertyValueFactory<>("clothingAllowance"));
-        grossSemiMonthlyColumn.setCellValueFactory(new PropertyValueFactory<>("grossSemiMonthlyRate"));
+        grossSemiMonthlyColumn .setCellValueFactory(new PropertyValueFactory<>("grossSemiMonthlyRate"));
         hourlyRateColumn     .setCellValueFactory(new PropertyValueFactory<>("hourlyRate"));
 
-        loadEmployeesFromCSV();
+        loadEmployees();
     }
 
-    // ── CSV read ──────────────────────────────────────────────────────────────
+    // ── Load data from DAO ────────────────────────────────────────────────────
 
-    private void loadEmployeesFromCSV() {
+    private void loadEmployees() {
         employeeList.clear();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                getClass().getResourceAsStream(EMPLOYEE_DATA_FILE),
-                StandardCharsets.UTF_8))) {
-
-            reader.readLine(); // skip header
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.isBlank()) continue;
-                String[] d = line.split(",", -1);
-                if (d.length == 19) {
-                    employeeList.add(new AllEmployeePublic(
-                            d[0], d[1], d[2], d[3], d[4], d[5], d[6], d[7], d[8],
-                            d[9], d[10], d[11], d[12], d[13], d[14], d[15], d[16],
-                            d[17], d[18]));
-                }
-            }
-            emp_table.setItems(employeeList);
-
-        } catch (IOException e) {
-            showErrorAlert("Load Error", "Failed to load employee data.", e.getMessage());
-        }
-    }
-
-    // ── CSV write — THE FIX ───────────────────────────────────────────────────
-
-    /**
-     * Resolves the classpath resource path to a real on-disk {@link File}
-     * so that {@link FileWriter} can write to it.
-     *
-     * Root cause of the original bug: {@code new FileWriter(classpathString)}
-     * treats the classpath string as a literal OS path, which does not exist.
-     * We must resolve via {@code getClass().getResource()} first.
-     */
-    private File resolveCSVFile() {
-        try {
-            URL url = getClass().getResource(EMPLOYEE_DATA_FILE);
-            if (url != null && "file".equals(url.getProtocol())) {
-                return new File(url.toURI());
-            }
-        } catch (Exception e) {
-            System.err.println("[HREmployeeView] Cannot resolve CSV: " + e.getMessage());
-        }
-        showErrorAlert("File Error",
-                "Cannot locate employee data file on disk.",
-                "Make sure the project is run from an IDE/Gradle, not from inside a JAR.\n"
-                        + "Path: " + EMPLOYEE_DATA_FILE);
-        return null;
-    }
-
-    private void saveEmployeesToCSV() {
-        File file = resolveCSVFile();
-        if (file == null) return; // error already shown
-
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(file, StandardCharsets.UTF_8))) {
-
-            writer.write(CSV_HEADER);
-            writer.newLine();
-
-            for (AllEmployee emp : employeeList) {
-                writer.write(String.join(",",
-                        emp.getEmployeeNumber(),
-                        emp.getLastName(),
-                        emp.getFirstName(),
-                        emp.getBirthday(),
-                        emp.getAddress(),
-                        emp.getPhoneNumber(),
-                        emp.getSss(),
-                        emp.getPhilHealth(),
-                        emp.getTin(),
-                        emp.getPagIbig(),
-                        emp.getStatus(),
-                        emp.getPosition(),
-                        emp.getImmediateSupervisor(),
-                        emp.getBasicSalary(),
-                        emp.getRiceSubsidy(),
-                        emp.getPhoneAllowance(),
-                        emp.getClothingAllowance(),
-                        emp.getGrossSemiMonthlyRate(),
-                        emp.getHourlyRate()
-                ));
-                writer.newLine();
-            }
-
-        } catch (IOException e) {
-            showErrorAlert("Save Error", "Failed to save employee data.", e.getMessage());
-        }
+        employeeList.addAll(employeeDAO.getAllEmployees());
+        emp_table.setItems(employeeList);
     }
 
     // ── Public API used by child windows ─────────────────────────────────────
 
-    /** Returns a snapshot of all current employee numbers for duplicate checking. */
-    public java.util.Set<String> getExistingEmpNumbers() {
-        java.util.Set<String> ids = new java.util.HashSet<>();
-        for (AllEmployee e : employeeList) ids.add(e.getEmployeeNumber());
-        return ids;
+    public Set<String> getExistingEmpNumbers() {
+        return employeeDAO.getExistingEmployeeNumbers();
     }
 
     public void addEmployee(AllEmployee employee) {
-        employeeList.add(employee);
-        saveEmployeesToCSV();
+        employeeDAO.addEmployee(employee);
         refreshTable();
     }
 
     public void updateEmployee(AllEmployee updated) {
-        for (int i = 0; i < employeeList.size(); i++) {
-            if (employeeList.get(i).getEmployeeNumber()
-                    .equals(updated.getEmployeeNumber())) {
-                employeeList.set(i, updated);
-                break;
-            }
-        }
-        saveEmployeesToCSV();
+        employeeDAO.updateEmployee(updated);
         refreshTable();
     }
 
     public void refreshTable() {
-        loadEmployeesFromCSV();
+        loadEmployees();
     }
 
     // ── Button handlers ───────────────────────────────────────────────────────
@@ -226,7 +136,6 @@ public class HREmployeeView {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/org/example/motorphui/hr_view_and_update_employee.fxml"));
             Parent parent = loader.load();
-
             HRViewAndUpdateEmployee ctrl = loader.getController();
             ctrl.setEmployee(selected);
             ctrl.setParentController(this);
@@ -236,7 +145,6 @@ public class HREmployeeView {
             stage.setScene(new Scene(parent));
             stage.setResizable(false);
             stage.showAndWait();
-
             refreshTable();
         } catch (IOException e) {
             showErrorAlert("Error", "Could not open the update window.", e.getMessage());
@@ -249,7 +157,6 @@ public class HREmployeeView {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(
                     "/org/example/motorphui/add_employee.fxml"));
             Parent root = loader.load();
-
             AddEmployee ctrl = loader.getController();
             ctrl.setParentController(this);
 
@@ -267,22 +174,18 @@ public class HREmployeeView {
     private void handleDeleteEmployeeButton() {
         AllEmployee selected = emp_table.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showWarningAlert("No Selection",
-                    "Please select an employee in the table to delete.");
+            showWarningAlert("No Selection", "Please select an employee in the table to delete.");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Deletion");
-        confirm.setHeaderText("Delete: " + selected.getFirstName()
-                + " " + selected.getLastName() + "?");
-        confirm.setContentText(
-                "This action cannot be undone. Are you sure?");
+        confirm.setHeaderText("Delete: " + selected.getFirstName() + " " + selected.getLastName() + "?");
+        confirm.setContentText("This action cannot be undone. Are you sure?");
         Optional<ButtonType> result = confirm.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            employeeList.remove(selected);
-            saveEmployeesToCSV();
+            employeeDAO.deleteEmployee(selected.getEmployeeNumber());
             refreshTable();
 
             Alert ok = new Alert(Alert.AlertType.INFORMATION);

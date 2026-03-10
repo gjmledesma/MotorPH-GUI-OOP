@@ -5,9 +5,16 @@ import javafx.beans.property.SimpleStringProperty;
 /**
  * Model class representing a single attendance record from the CSV.
  * Each field uses JavaFX StringProperty so the TableView can bind to it directly.
+ *
+ * OOP PRINCIPLES DEMONSTRATED:
+ *   ENCAPSULATION — All fields are private; status is automatically recomputed
+ *                   whenever logIn is mutated through the setter.
+ *   POLYMORPHISM  — setLogIn() is overloaded: one variant takes only a time
+ *                   string, another takes a time string and a custom threshold.
  */
 public class AttendanceRecord {
 
+    // ── Private fields (ENCAPSULATION) ────────────────────────────────────────
     private final SimpleStringProperty empNumber;
     private final SimpleStringProperty lastName;
     private final SimpleStringProperty firstName;
@@ -16,35 +23,31 @@ public class AttendanceRecord {
     private final SimpleStringProperty logOut;
     private final SimpleStringProperty status;
 
-    // Standard work start time (HH:mm). Arrivals after this are marked Late.
-    private static final String STANDARD_LOGIN = "08:00";
+    /** Standard work start time (HH:mm). Arrivals after this are marked Late. */
+    private static final String DEFAULT_STANDARD_LOGIN = "08:00";
 
-    public AttendanceRecord(String empNumber,
-                            String lastName,
-                            String firstName,
-                            String date,
-                            String logIn,
-                            String logOut) {
-        this.empNumber  = new SimpleStringProperty(empNumber);
-        this.lastName   = new SimpleStringProperty(lastName);
-        this.firstName  = new SimpleStringProperty(firstName);
-        this.date       = new SimpleStringProperty(date);
-        this.logIn      = new SimpleStringProperty(logIn);
-        this.logOut     = new SimpleStringProperty(logOut);
-        this.status     = new SimpleStringProperty(computeStatus(logIn));
+    // ── Constructors ──────────────────────────────────────────────────────────
+    public AttendanceRecord(String empNumber, String lastName, String firstName,
+                            String date, String logIn, String logOut) {
+        this.empNumber = new SimpleStringProperty(empNumber);
+        this.lastName  = new SimpleStringProperty(lastName);
+        this.firstName = new SimpleStringProperty(firstName);
+        this.date      = new SimpleStringProperty(date);
+        this.logIn     = new SimpleStringProperty(logIn);
+        this.logOut    = new SimpleStringProperty(logOut);
+        this.status    = new SimpleStringProperty(computeStatus(logIn, DEFAULT_STANDARD_LOGIN));
     }
 
-    // ── Status logic ─────────────────────────────────────────────────────────
+    // ── Status computation ────────────────────────────────────────────────────
 
     /**
      * Compares the employee's log-in time against the standard start time.
-     * Returns "On Time" or "Late".
+     * Returns "On Time", "Late", or "Unknown".
      */
-    private String computeStatus(String loginTime) {
+    private String computeStatus(String loginTime, String standardTime) {
         try {
-            // Normalise "H:mm" → "HH:mm" so the comparison works correctly
             String normalised = normaliseTime(loginTime);
-            return normalised.compareTo(STANDARD_LOGIN) <= 0 ? "On Time" : "Late";
+            return normalised.compareTo(standardTime) <= 0 ? "On Time" : "Late";
         } catch (Exception e) {
             return "Unknown";
         }
@@ -59,8 +62,7 @@ public class AttendanceRecord {
         return hour + ":" + minute;
     }
 
-    // ── JavaFX Property getters (required by PropertyValueFactory) ────────────
-
+    // ── JavaFX Property accessors ─────────────────────────────────────────────
     public SimpleStringProperty empNumberProperty()  { return empNumber; }
     public SimpleStringProperty lastNameProperty()   { return lastName; }
     public SimpleStringProperty firstNameProperty()  { return firstName; }
@@ -69,8 +71,7 @@ public class AttendanceRecord {
     public SimpleStringProperty logOutProperty()     { return logOut; }
     public SimpleStringProperty statusProperty()     { return status; }
 
-    // ── Plain getters (convenient for filtering logic) ────────────────────────
-
+    // ── Getters ───────────────────────────────────────────────────────────────
     public String getEmpNumber()  { return empNumber.get(); }
     public String getLastName()   { return lastName.get(); }
     public String getFirstName()  { return firstName.get(); }
@@ -78,4 +79,40 @@ public class AttendanceRecord {
     public String getLogIn()      { return logIn.get(); }
     public String getLogOut()     { return logOut.get(); }
     public String getStatus()     { return status.get(); }
+
+    // ── Setters (ENCAPSULATION with automatic status recomputation) ───────────
+
+    /**
+     * Updates the log-in time and recomputes attendance status using the
+     * default standard login time (08:00).
+     *
+     * POLYMORPHISM — overloaded: this variant uses the default threshold.
+     */
+    public void setLogIn(String loginTime) {
+        logIn.set(loginTime);
+        status.set(computeStatus(loginTime, DEFAULT_STANDARD_LOGIN));
+    }
+
+    /**
+     * Updates the log-in time and recomputes attendance status using a
+     * caller-supplied standard login time.
+     *
+     * POLYMORPHISM — overloaded: this variant allows a custom threshold,
+     * useful when a department has a different shift start time.
+     *
+     * @param loginTime    the actual time the employee clocked in (H:mm or HH:mm)
+     * @param standardTime the on-time threshold in HH:mm format, e.g. "09:00"
+     */
+    public void setLogIn(String loginTime, String standardTime) {
+        logIn.set(loginTime);
+        status.set(computeStatus(loginTime, normaliseTime(standardTime)));
+    }
+
+    /** Sets the log-out time. */
+    public void setLogOut(String logOutTime) {
+        logOut.set(logOutTime == null ? "" : logOutTime);
+    }
+
+    public void setDate(String d)      { date.set(d == null ? "" : d); }
+    public void setEmpNumber(String n) { empNumber.set(n == null ? "" : n.trim()); }
 }

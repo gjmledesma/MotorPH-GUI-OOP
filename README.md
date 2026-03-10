@@ -4,7 +4,7 @@
 | :-----: | :-----: | :---: |
 | Object-oriented Programming | A2101 | Group 5 |  
 
-| Members: |
+| Active Members: |
 | :----: |
 | Gabriel Josemaria Ledesma |
 | Martin Lanze Catolos |
