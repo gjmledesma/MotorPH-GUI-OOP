@@ -1,7 +1,8 @@
 package org.example.motorphui.dao;
 
+import org.example.motorphui.util.DataFileManager;
+
 import java.io.*;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,100 +10,113 @@ import java.util.List;
 /**
  * Abstract base class for all DAO implementations.
  *
- * Centralises the repeated file-resolution and buffered-reader/writer boilerplate
- * that was previously duplicated across every DAO class.
+ * BUG FIXES IN THIS VERSION
+ * ─────────────────────────
+ * 1. appendRow — trailing-newline guard
+ *    CSV files that were created by Excel, Notepad, or earlier app versions
+ *    often do not end with a newline character.  When a Java FileWriter opened
+ *    in append mode writes to such a file the new row is glued directly onto
+ *    the last existing row (e.g. employee 10035 appeared on the same line as
+ *    10034).  The fix writes a newline separator before every appended row
+ *    when the file already has content; blank lines are harmless because
+ *    readDataLines() skips them.
+ *
+ * 2. resolveFile / write path — DataFileManager
+ *    The original resolveFile used getClass().getResource() which resolves to
+ *    the Gradle build output directory (build/resources/main/).  Two problems:
+ *      a) Writes went to the build folder, wiped on every ./gradlew build.
+ *      b) When running on the JavaFX module path the URL protocol is not
+ *         "file", so resolveFile returned null and appendRow silently did
+ *         nothing — the root cause of ticket requests never being saved.
+ *    All I/O is now routed through DataFileManager which maintains a stable
+ *    writable directory at ~/.motorphui/data/ and seeds it from classpath
+ *    resources on first run.
  *
  * OOP PRINCIPLES DEMONSTRATED:
- *   ABSTRACTION   — Provides a reusable template; concrete DAOs extend this
- *                   class and call the protected helpers rather than repeating
- *                   raw I/O code.
+ *   ABSTRACTION   — Provides a reusable template; concrete DAOs call protected
+ *                   helpers instead of repeating raw I/O code.
  *   ENCAPSULATION — All helpers are protected; callers outside the DAO layer
- *                   cannot access them directly.
- *   INHERITANCE   — All concrete DAOs (AuthenticationDAO, EmployeeDAOImpl,
- *                   AttendanceDAOImpl, LeaveRequestDAO, etc.) extend BaseDAO.
+ *                   cannot access them.
+ *   INHERITANCE   — All concrete DAOs extend BaseDAO.
  */
 public abstract class BaseDAO {
+
+    // ── Private utility ────────────────────────────────────────────────────────
+
+    /** Extracts the bare filename from a full classpath resource path.
+     *  "/org/example/motorphui/data/foo.csv" → "foo.csv" */
+    private static String filenameFrom(String resourcePath) {
+        return resourcePath.substring(resourcePath.lastIndexOf('/') + 1);
+    }
 
     // ── Protected helpers ─────────────────────────────────────────────────────
 
     /**
-     * Resolves a classpath resource path to a writable on-disk {@link File}.
-     * Returns null (and prints an error) if the resource cannot be resolved
-     * to a real file (e.g. when running inside a JAR).
-     *
-     * @param resourcePath classpath path, e.g. "/org/example/motorphui/data/foo.csv"
+     * Resolves a classpath resource path to a writable on-disk {@link File}
+     * inside the persistent external data directory (~/.motorphui/data/).
+     * Never returns null — DataFileManager guarantees the directory exists.
      */
     protected File resolveFile(String resourcePath) {
-        try {
-            URL url = getClass().getResource(resourcePath);
-            if (url != null && "file".equals(url.getProtocol())) {
-                return new File(url.toURI());
-            }
-        } catch (Exception e) {
-            System.err.println("[BaseDAO] Cannot resolve " + resourcePath + ": " + e.getMessage());
-        }
-        System.err.println("[BaseDAO] Resource is not a plain file (may be inside a JAR): " + resourcePath);
-        return null;
+        return DataFileManager.resolveFile(filenameFrom(resourcePath));
     }
 
     /**
-     * Opens a {@link BufferedReader} for a classpath resource.
-     * Falls back to {@link #resolveFile} when the resource stream is null.
-     *
-     * @param resourcePath classpath path to the CSV file
-     * @return an open BufferedReader, or null if the resource cannot be found
+     * Opens a {@link BufferedReader} for a CSV file, reading from the
+     * persistent external data directory via DataFileManager.
      */
     protected BufferedReader openReader(String resourcePath) {
-        InputStream is = getClass().getResourceAsStream(resourcePath);
-        if (is == null) {
-            File f = resolveFile(resourcePath);
-            if (f != null && f.exists()) {
-                try { is = new FileInputStream(f); }
-                catch (FileNotFoundException ignored) {}
-            }
-        }
-        if (is == null) {
-            System.err.println("[BaseDAO] CSV not found: " + resourcePath);
-            return null;
-        }
-        return new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        return DataFileManager.openReader(filenameFrom(resourcePath));
     }
 
     /**
-     * Appends a single data row to the CSV file, creating the file and writing
-     * the provided header first if the file does not yet exist or is empty.
+     * Appends a single data row to the CSV file.
      *
-     * @param resourcePath classpath path to the target CSV
-     * @param csvHeader    header row to write if creating the file
+     * <p>If the file does not yet exist or is empty the header row is written
+     * first.  If the file already has content a newline is written before the
+     * new row to guard against CSV files that do not end with one — this was
+     * the root cause of new employees being concatenated onto the last row.
+     * Extra blank lines produced by this guard are silently skipped by
+     * {@link #readDataLines}.
+     *
+     * @param resourcePath classpath path to the target CSV (used to derive filename)
+     * @param csvHeader    header row written only when creating a new file
      * @param csvRow       data row to append
      */
     protected void appendRow(String resourcePath, String csvHeader, String csvRow) {
         File file = resolveFile(resourcePath);
-        if (file == null) return;
-        boolean needsHeader = !file.exists() || file.length() == 0;
+        boolean isEmpty = !file.exists() || file.length() == 0;
+
         try (BufferedWriter writer = new BufferedWriter(
                 new FileWriter(file, StandardCharsets.UTF_8, true))) {
-            if (needsHeader) {
+
+            if (isEmpty) {
+                // New file: write header first, then the data row.
                 writer.write(csvHeader);
                 writer.newLine();
+            } else {
+                // Existing file: always write a leading newline before the new
+                // row.  If the file already ends with '\n' this produces one
+                // harmless blank line; if it does not end with '\n' (common
+                // with Excel/Notepad exports) this prevents row concatenation.
+                // readDataLines() skips blank lines so either case is safe.
+                writer.newLine();
             }
+
             writer.write(csvRow);
             writer.newLine();
+
         } catch (IOException e) {
-            System.err.println("[BaseDAO] appendRow error: " + e.getMessage());
+            System.err.println("[BaseDAO] appendRow error for " + file.getName()
+                    + ": " + e.getMessage());
         }
     }
 
     /**
      * Rewrites the entire CSV file from the provided lines list.
      * The first element of {@code lines} must be the header row.
-     *
-     * @param resourcePath classpath path to the target CSV
-     * @param lines        all rows to write (header + data)
      */
     protected void rewriteFile(String resourcePath, List<String> lines) {
         File file = resolveFile(resourcePath);
-        if (file == null) return;
         try (BufferedWriter writer = new BufferedWriter(
                 new FileWriter(file, StandardCharsets.UTF_8, false))) {
             for (int i = 0; i < lines.size(); i++) {
@@ -110,15 +124,14 @@ public abstract class BaseDAO {
                 if (i < lines.size() - 1) writer.newLine();
             }
         } catch (IOException e) {
-            System.err.println("[BaseDAO] rewriteFile error: " + e.getMessage());
+            System.err.println("[BaseDAO] rewriteFile error for " + file.getName()
+                    + ": " + e.getMessage());
         }
     }
 
     /**
-     * Reads all non-blank lines from a CSV resource, skipping the header.
-     *
-     * @param resourcePath classpath path to the CSV file
-     * @return list of data lines (header excluded), never null
+     * Reads all non-blank lines from a CSV, skipping the header row.
+     * Returns an empty list (never null) on any failure.
      */
     protected List<String> readDataLines(String resourcePath) {
         List<String> result = new ArrayList<>();
@@ -127,7 +140,7 @@ public abstract class BaseDAO {
             String line;
             boolean isHeader = true;
             while ((line = reader.readLine()) != null) {
-                if (line.isBlank()) continue;
+                if (line.isBlank()) continue;          // skip blank/guard lines
                 if (isHeader) { isHeader = false; continue; }
                 result.add(line);
             }
