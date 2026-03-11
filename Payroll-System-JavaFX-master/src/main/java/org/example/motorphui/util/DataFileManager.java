@@ -5,137 +5,138 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 /**
- * Manages a persistent, writable data directory for all CSV files.
+ * Manages all CSV file I/O exclusively within the project's local resources
+ * directory at:
  *
- * ROOT CAUSE FIXED:
- *   Using getClass().getResource() to write CSV files resolves to the Gradle
- *   build output directory (build/resources/main/).  Any data written there is
- *   wiped the next time Gradle compiles or syncs the project.  When running on
- *   the JavaFX module path the URL protocol may not be "file" at all, causing
- *   resolveFile() to return null and all writes to silently fail.
+ *   <project-root>/src/main/resources/org/example/motorphui/data/
  *
- * SOLUTION:
- *   On first access, this class copies every bundled CSV from the classpath
- *   into a stable folder in the user's home directory (~/.motorphui/data/).
- *   All subsequent reads AND writes target that external directory, so data
- *   persists across builds, IDE syncs, and application restarts.
+ * All CRUD operations (reads, writes, appends) are performed directly on
+ * these source files.  No external directory (e.g. ~/.motorphui/) is created
+ * or used.
  *
- * USAGE (via BaseDAO helpers — callers never touch this class directly):
- *   File f  = DataFileManager.resolveFile("motorph_employee_data.csv");
- *   BufferedReader r = DataFileManager.openReader("motorph_employee_data.csv");
+ * NOTE: This design is intentional for development/desktop-app use where the
+ * program is always run from its project root (e.g. via an IDE or a run
+ * script sitting at the repo root).  If you ever package this as a
+ * self-contained JAR, resources inside the JAR are read-only — you would
+ * need to revisit this strategy then.
  */
 public final class DataFileManager {
 
-    /** Writable home directory for all application data files. */
-    private static final String APP_DATA_DIR =
-            System.getProperty("user.home") + File.separator
-            + ".motorphui" + File.separator + "data";
+    /**
+     * Absolute path to the local resources data folder.
+     * Resolved at startup from the JVM working directory, which is expected
+     * to be the project root when the app is launched from an IDE or from
+     * a run-script in the repo root.
+     */
+    private static final String DATA_DIR =
+            System.getProperty("user.dir")
+            + File.separator + "src"
+            + File.separator + "main"
+            + File.separator + "resources"
+            + File.separator + "org"
+            + File.separator + "example"
+            + File.separator + "motorphui"
+            + File.separator + "data";
 
-    /** Classpath prefix where the bundled (seed) CSV files live. */
-    private static final String CLASSPATH_DATA = "/org/example/motorphui/data/";
-
-    /** All CSV files the application uses — seeded from classpath on first run. */
-    private static final String[] MANAGED_FILES = {
-            "motorph_employee_data.csv",
-            "motorph_employee_credentials.csv",
-            "motorph_hr_credentials.csv",
-            "motorph_finance_credentials.csv",
-            "motorph_it_credentials.csv",
-            "motorph_attendance_records.csv",
-            "motorph_leave_records.csv",
-            "motorph_ticket_requests.csv"
+    /**
+     * Transactional files that must exist with at least a header row.
+     * These are created automatically if they are missing from the repo.
+     */
+    private static final String[][] TRANSACTIONAL_HEADERS = {
+            { "motorph_ticket_requests.csv",
+              "Ticket ID,Employee ID,Last Name,First Name,Category,Subject,Description,Date Filed,Status,IT Remarks" },
+            { "motorph_leave_records.csv",
+              "Leave ID,Last Name,First Name,Start Date,End Date,Days,Leave Type,Reason,Approved?" },
+            { "motorph_attendance_records.csv",
+              "Employee #,Last Name,First Name,Date,Log In,Log Out" }
     };
 
-    static {
-        // Initialise the data directory and seed any missing files as soon as
-        // the class is first loaded.
-        initialise();
-    }
+    static { initialise(); }
 
     private DataFileManager() {}
 
     // ── Public API ────────────────────────────────────────────────────────────
 
     /**
-     * Returns a writable {@link File} for the given CSV filename.
-     * The file is guaranteed to exist (seeded from classpath if needed).
+     * Returns a writable {@link File} pointing to {@code filename} inside
+     * the local resources data directory.
      *
-     * @param filename e.g. "motorph_employee_data.csv"
+     * <p>Guarantees the parent directory exists before returning, so
+     * {@link FileWriter} never encounters a missing parent.</p>
+     *
+     * @param filename the bare CSV filename, e.g. {@code "motorph_leave_records.csv"}
+     * @return a {@link File} ready for reading or writing
      */
     public static File resolveFile(String filename) {
-        ensureSeeded(filename);
-        return new File(APP_DATA_DIR, filename);
+        try {
+            Files.createDirectories(Path.of(DATA_DIR));
+        } catch (IOException e) {
+            System.err.println("[DataFileManager] Cannot create data dir: " + e.getMessage());
+        }
+        return new File(DATA_DIR, filename);
     }
 
     /**
-     * Opens a {@link BufferedReader} for the given CSV filename,
-     * reading from the external data directory.
+     * Opens a {@link BufferedReader} for {@code filename} from the local
+     * resources data directory.
      *
-     * @param filename e.g. "motorph_employee_data.csv"
-     * @return an open reader, or null if the file cannot be found
+     * @param filename the bare CSV filename
+     * @return a {@link BufferedReader}, or {@code null} if the file is not found
      */
     public static BufferedReader openReader(String filename) {
         File f = resolveFile(filename);
-        if (f.exists()) {
-            try {
-                return new BufferedReader(
-                        new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8));
-            } catch (IOException e) {
-                System.err.println("[DataFileManager] Cannot open reader for " + filename
-                        + ": " + e.getMessage());
-            }
+        if (!f.exists() || f.length() == 0) {
+            System.err.println("[DataFileManager] File not found or empty: " + f.getAbsolutePath());
+            return null;
         }
-        // Last-resort fallback — read directly from the classpath (read-only)
-        InputStream is = DataFileManager.class.getResourceAsStream(CLASSPATH_DATA + filename);
-        if (is != null) {
-            System.err.println("[DataFileManager] WARNING: reading " + filename
-                    + " from classpath (changes will not persist).");
-            return new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+        try {
+            return new BufferedReader(
+                    new InputStreamReader(new FileInputStream(f), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            System.err.println("[DataFileManager] Cannot open " + filename
+                    + ": " + e.getMessage());
+            return null;
         }
-        System.err.println("[DataFileManager] CSV not found: " + filename);
-        return null;
     }
 
-    // ── Private helpers ────────────────────────────────────────────────────────
+    // ── Startup ────────────────────────────────────────────────────────────────
 
-    /** Creates the data directory and seeds all managed files on first run. */
+    /**
+     * Called once at class-load time.
+     * Ensures the data directory exists and that all transactional CSV files
+     * have at least a header row.  Master CSVs (employee data, credentials)
+     * are assumed to already exist in the repo and are never auto-created.
+     */
     private static void initialise() {
-        File dir = new File(APP_DATA_DIR);
-        if (!dir.exists() && !dir.mkdirs()) {
-            System.err.println("[DataFileManager] Could not create data directory: " + APP_DATA_DIR);
+        try {
+            Files.createDirectories(Path.of(DATA_DIR));
+        } catch (IOException e) {
+            System.err.println("[DataFileManager] Cannot create data dir: " + e.getMessage());
             return;
         }
-        for (String filename : MANAGED_FILES) {
-            seedIfAbsent(filename, dir);
-        }
-    }
 
-    /** Seeds a single file from the classpath if it is not yet present externally. */
-    private static void ensureSeeded(String filename) {
-        File target = new File(APP_DATA_DIR, filename);
-        if (!target.exists()) {
-            seedIfAbsent(filename, new File(APP_DATA_DIR));
+        for (String[] entry : TRANSACTIONAL_HEADERS) {
+            seedTransactionalIfAbsent(entry[0], entry[1]);
         }
+
+        System.out.println("[DataFileManager] Data directory: " + DATA_DIR);
     }
 
     /**
-     * Copies {@code filename} from the classpath resource bundle into
-     * {@code dir} if no file by that name exists there yet.
+     * Creates a header-only transactional CSV file inside the local resources
+     * directory if it does not already exist.
      */
-    private static void seedIfAbsent(String filename, File dir) {
-        File target = new File(dir, filename);
+    private static void seedTransactionalIfAbsent(String filename, String csvHeader) {
+        File target = new File(DATA_DIR, filename);
         if (target.exists()) return;
-
-        String resourcePath = CLASSPATH_DATA + filename;
-        try (InputStream in = DataFileManager.class.getResourceAsStream(resourcePath)) {
-            if (in == null) {
-                System.err.println("[DataFileManager] Classpath resource not found: " + resourcePath);
-                return;
-            }
-            Files.copy(in, target.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("[DataFileManager] Seeded " + filename + " → " + target.getAbsolutePath());
+        try (BufferedWriter w = new BufferedWriter(
+                new FileWriter(target, StandardCharsets.UTF_8, false))) {
+            w.write(csvHeader);
+            w.newLine();
+            System.out.println("[DataFileManager] Created transactional: " + filename);
         } catch (IOException e) {
-            System.err.println("[DataFileManager] Failed to seed " + filename + ": " + e.getMessage());
+            System.err.println("[DataFileManager] Failed to create " + filename
+                    + ": " + e.getMessage());
         }
     }
 }

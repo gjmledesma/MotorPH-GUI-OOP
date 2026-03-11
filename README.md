@@ -19,15 +19,22 @@
 
 <h3>Step 1</h3>
 
-This program uses <b>JavaFX 23.0.1</b> components to function. Visit the official website at [GluonHQ](https://gluonhq.com/products/javafx/) then pick & download the appropriate JavaFX 23.0.1 SDK components based on your operating system. Extract the zip file in your Downloads folder. In the extracted folder, make sure to also extract src.zip. 
+This program uses <b>JavaFX 23.0.1</b> components to function. To download the required components, do the following:
+
+1. Visit the official website at [GluonHQ](https://gluonhq.com/products/javafx/), scroll down to the Downloads section, check <i>```Include archived versions```</i>. 
+2. From the JavaFX version dropdown menu, select ```23.0.1```. After that, you can then pick and download the appropriate JavaFX 23.0.1 SDK components for your computer's operating system. 
+
+![GluonHQ JavaFX downloads section](screenshots/gluonhq-javafx-downloads.png)
+
+3. Extract the JavaFX zip file in your Downloads folder. In the extracted folder, make sure to also extract ```src.zip```. 
 
 ![Extract src.zip](screenshots/javafx-folder-inside.png)
 
 <h3>Step 2.1</h3>
 
-Download the MotorPH payroll application by downloading the repo as ZIP.
+You may now download the MotorPH payroll system application by downloading the repo as ZIP.
 
-In Netbeans, first open the Payroll program. Then, select the Project, right-click the project and go to Properties. Here, select "Run" found in the Categories list, then paste the following inside VM Options: 
+In Netbeans, first open the main folder of the program. Then, select the Project (```MotorPHSystemOOPF```), right-click it project to go to Properties. Here, select "Run" found in the Categories list, then paste the following inside VM Options: 
 
     For Windows:
     --module-path "C:\Users\<NAME>\Downloads\javafx-sdk-23.0.1\lib" --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics
@@ -35,8 +42,7 @@ In Netbeans, first open the Payroll program. Then, select the Project, right-cli
     For macOS:
     --module-path "/Users/<NAME>/Downloads/javafx-sdk-23.0.1/lib" --add-modules javafx.base,javafx.controls,javafx.fxml,javafx.graphics
 
-    Note #1: <NAME> is your computer system's username.
-    Note #2: Module path is the file path of JavaFX's libraries.
+    Note: Change <NAME> to your computer system's username.
 
 | OS | Adding Parameters in VM Options  |
 | :-----: | :---: |
@@ -55,8 +61,8 @@ Additionally, paste just the file location path in the program's pom.xml found i
 
 <h3>Step 3</h3>
 
-After you're done following the instructions above, simply select <b><i>Run Project</i></b> in Netbeans to run the program.
+After you're done following the instructions above, make sure to select <b><i>Build Project</i></b> first, then you can select <b><i>Run Project</i></b> in Netbeans to run the program.
 
 <br>
 
-Note: Do NOT try to run the program by right-clicking ```MainApplication.java``` and then selecting <i>Run File</i> as the program may fail to start.
+Note: Do NOT try to run the program by right-clicking ```MainApplication.java``` and selecting <i>Run File</i> as the program may fail to start.

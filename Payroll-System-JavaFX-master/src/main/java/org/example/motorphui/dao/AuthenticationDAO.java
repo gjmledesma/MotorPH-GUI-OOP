@@ -2,38 +2,39 @@ package org.example.motorphui.dao;
 
 import org.example.motorphui.model.AllEmployee;
 import org.example.motorphui.model.AllEmployeePublic;
+import org.example.motorphui.util.DataFileManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
- * DAO for all authentication operations.  Reads credential CSVs and validates
- * login attempts for all four user roles.
+ * DAO for all authentication operations.
+ *
+ * All CSV reads now go through DataFileManager so they target the same
+ * persistent external directory (~/.motorphui/data/) that the write operations
+ * use.  Previously the static authenticate() method opened the classpath
+ * stream directly, which could read a stale/unmodified copy of the file.
  *
  * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseDAO, inheriting file-resolution helpers.
- *   ABSTRACTION   — Implements IAuthDAO, hiding CSV parsing from callers.
- *   ENCAPSULATION — File paths and parsing logic are private; callers use
- *                   only the typed public methods.
- *
- * BACKWARD COMPATIBILITY: Static delegate methods are retained so that
- * existing login controllers that call AuthenticationDAO.authenticateHR(…)
- * continue to compile unchanged.
+ *   INHERITANCE   — Extends BaseDAO.
+ *   ABSTRACTION   — Implements IAuthDAO.
+ *   ENCAPSULATION — File names and parsing logic are private.
  */
 public class AuthenticationDAO extends BaseDAO implements IAuthDAO {
 
-    // ── Singleton used by the static delegate methods ─────────────────────────
     private static final AuthenticationDAO INSTANCE = new AuthenticationDAO();
 
-    // ── CSV resource paths ─────────────────────────────────────────────────────
-    private static final String EMPLOYEE_CREDENTIALS   = "/org/example/motorphui/data/motorph_employee_credentials.csv";
-    private static final String HR_CREDENTIALS         = "/org/example/motorphui/data/motorph_hr_credentials.csv";
-    private static final String FINANCE_CREDENTIALS    = "/org/example/motorphui/data/motorph_finance_credentials.csv";
-    private static final String IT_CREDENTIALS         = "/org/example/motorphui/data/motorph_it_credentials.csv";
-    private static final String EMPLOYEE_DATA          = "/org/example/motorphui/data/motorph_employee_data.csv";
+    // ── CSV file names (resolved via DataFileManager) ─────────────────────────
+    private static final String EMPLOYEE_CREDENTIALS = "motorph_employee_credentials.csv";
+    private static final String HR_CREDENTIALS       = "motorph_hr_credentials.csv";
+    private static final String FINANCE_CREDENTIALS  = "motorph_finance_credentials.csv";
+    private static final String IT_CREDENTIALS       = "motorph_it_credentials.csv";
+    private static final String EMPLOYEE_DATA        = "motorph_employee_data.csv";
 
-    // ── IAuthDAO implementation (instance methods) ────────────────────────────
+    // ── Classpath resource paths (kept for BaseDAO.openReader compatibility) ──
+    private static final String RES = "/org/example/motorphui/data/";
+
+    // ── IAuthDAO implementation ───────────────────────────────────────────────
 
     @Override
     public boolean authenticateEmployee(String empId, String username, String password) {
@@ -42,117 +43,95 @@ public class AuthenticationDAO extends BaseDAO implements IAuthDAO {
 
     @Override
     public boolean authenticateHR(String username, String password) {
-        return checkCredentials(HR_CREDENTIALS, username, password, 2);
+        return checkCredentials(HR_CREDENTIALS, username, password);
     }
 
     @Override
     public boolean authenticateFinance(String username, String password) {
-        return checkCredentials(FINANCE_CREDENTIALS, username, password, 2);
+        return checkCredentials(FINANCE_CREDENTIALS, username, password);
     }
 
     @Override
     public boolean authenticateIT(String username, String password) {
-        return checkCredentials(IT_CREDENTIALS, username, password, 2);
+        return checkCredentials(IT_CREDENTIALS, username, password);
     }
 
     @Override
     public AllEmployee getEmployeeData(String empId) {
-        return findEmployee(empId);
+        return INSTANCE.findEmployee(empId);
     }
 
-    // ── Static delegate methods (backward compatibility) ─────────────────────
+    // ── Static delegate methods (backward compatibility with login controllers) ─
 
-    /**
-     * Authenticates a HR user.  Static delegate — callers may use either form:
-     *   AuthenticationDAO.authenticateHR(u, p)
-     *   new AuthenticationDAO().authenticateHR(u, p)
-     */
 //    public static boolean authenticateHR(String username, String password) {
-//        return INSTANCE.checkCredentials(HR_CREDENTIALS, username, password, 2);
+//        return INSTANCE.checkCredentials(HR_CREDENTIALS, username, password);
 //    }
 //
-//    /** Static delegate for Finance authentication. */
 //    public static boolean authenticateFinance(String username, String password) {
-//        return INSTANCE.checkCredentials(FINANCE_CREDENTIALS, username, password, 2);
+//        return INSTANCE.checkCredentials(FINANCE_CREDENTIALS, username, password);
 //    }
 //
-//    /** Static delegate for IT authentication. */
 //    public static boolean authenticateIT(String username, String password) {
-//        return INSTANCE.checkCredentials(IT_CREDENTIALS, username, password, 2);
+//        return INSTANCE.checkCredentials(IT_CREDENTIALS, username, password);
 //    }
 
     /**
-     * Authenticates an employee using employee-ID, username and password.
-     * Static delegate.
+     * Authenticates an employee (empId + username + password).
+     * Reads via DataFileManager so it sees the same file as write operations.
      */
     public static boolean authenticate(String empId, String username, String password) {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                AuthenticationDAO.class.getResourceAsStream(EMPLOYEE_CREDENTIALS)))) {
+        try (BufferedReader reader = DataFileManager.openReader(EMPLOYEE_CREDENTIALS)) {
+            if (reader == null) return false;
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length >= 3) {
-                    if (data[0].trim().equals(empId.trim())
-                            && data[1].trim().equals(username.trim())
-                            && data[2].trim().equals(password.trim())) {
-                        return true;
-                    }
+                if (data.length >= 3
+                        && data[0].trim().equals(empId.trim())
+                        && data[1].trim().equals(username.trim())
+                        && data[2].trim().equals(password.trim())) {
+                    return true;
                 }
             }
-        } catch (IOException | NullPointerException e) {
-            System.err.println("[AuthenticationDAO] Error authenticating employee: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("[AuthenticationDAO] authenticate error: " + e.getMessage());
         }
         return false;
     }
 
-    /**
-     * Fetches the full employee record for the given employee ID.
-     * Static delegate retained for backward compatibility.
-     */
+//    /** Static delegate for fetching employee data. */
 //    public static AllEmployee getEmployeeData(String empId) {
 //        return INSTANCE.findEmployee(empId);
 //    }
 
     // ── Private helpers ────────────────────────────────────────────────────────
 
-    /**
-     * Generic 2-column credential check (username, password).
-     *
-     * @param resourcePath classpath path to the credentials CSV
-     * @param username     username to match in column 0
-     * @param password     password to match in column 1
-     * @param minCols      minimum expected columns in the CSV row
-     */
-    private boolean checkCredentials(String resourcePath, String username,
-                                     String password, int minCols) {
-        try (BufferedReader reader = openReader(resourcePath)) {
+    private boolean checkCredentials(String filename, String username, String password) {
+        try (BufferedReader reader = DataFileManager.openReader(filename)) {
             if (reader == null) return false;
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] data = line.split(",");
-                if (data.length >= minCols) {
-                    if (data[0].trim().equals(username.trim())
-                            && data[1].trim().equals(password.trim())) {
-                        return true;
-                    }
+                if (data.length >= 2
+                        && data[0].trim().equals(username.trim())
+                        && data[1].trim().equals(password.trim())) {
+                    return true;
                 }
             }
         } catch (IOException e) {
-            System.err.println("[AuthenticationDAO] Error reading credentials: " + e.getMessage());
+            System.err.println("[AuthenticationDAO] checkCredentials error: " + e.getMessage());
         }
         return false;
     }
 
-    /** Reads the employee data CSV and returns the matching employee record. */
     private AllEmployee findEmployee(String empId) {
-        try (BufferedReader reader = openReader(EMPLOYEE_DATA)) {
+        try (BufferedReader reader = DataFileManager.openReader(EMPLOYEE_DATA)) {
             if (reader == null) return null;
             String line;
             boolean header = true;
             while ((line = reader.readLine()) != null) {
                 if (header) { header = false; continue; }
                 String[] data = line.split(",", -1);
-                if (data.length == 19 && data[0].trim().equals(empId.trim())) {
+                if (data.length >= 19 && data[0].trim().equals(empId.trim())) {
                     return new AllEmployeePublic(
                             data[0], data[1], data[2], data[3], data[4],
                             data[5], data[6], data[7], data[8], data[9],
@@ -161,7 +140,7 @@ public class AuthenticationDAO extends BaseDAO implements IAuthDAO {
                 }
             }
         } catch (IOException e) {
-            System.err.println("[AuthenticationDAO] Error fetching employee data: " + e.getMessage());
+            System.err.println("[AuthenticationDAO] findEmployee error: " + e.getMessage());
         }
         return null;
     }

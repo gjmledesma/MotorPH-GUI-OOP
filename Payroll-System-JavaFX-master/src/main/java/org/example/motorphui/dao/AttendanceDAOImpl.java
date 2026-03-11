@@ -15,24 +15,16 @@ import java.util.List;
 
 /**
  * CSV-backed implementation of {@link IAttendanceDAO}.
- *
- * Merges and replaces the original NewAttendanceDAO (read-only) and
- * EmployeeAttendanceDAO (read/write) into a single, coherent class.
- * AttendanceDAO is kept as a thin subclass for backward compatibility.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseDAO, reusing file I/O helpers.
- *   ABSTRACTION   — Implements IAttendanceDAO; callers depend only on the interface.
- *   ENCAPSULATION — All file paths and parsing logic are private.
+ * All reads and writes go through DataFileManager (via BaseDAO helpers).
  */
 public class AttendanceDAOImpl extends BaseDAO implements IAttendanceDAO {
 
     private static final String CSV_PATH = "/org/example/motorphui/data/motorph_attendance_records.csv";
+    private static final String CSV_HEADER =
+            "Employee #,Last Name,First Name,Date,Log In,Log Out";
 
     private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private static final DateTimeFormatter TIME_FMT = DateTimeFormatter.ofPattern("H:mm");
-
-    // ── IAttendanceDAO implementation ─────────────────────────────────────────
 
     @Override
     public ObservableList<AttendanceRecord> getAllAttendanceRecords() {
@@ -73,57 +65,45 @@ public class AttendanceDAOImpl extends BaseDAO implements IAttendanceDAO {
 
     @Override
     public AttendanceRecord writeTimeIn(String empId, String lastName, String firstName) {
-        File csv = resolveFile(CSV_PATH);
-        if (csv == null) return null;
-
         String today   = LocalDate.now().format(DATE_FMT);
         String timeNow = LocalTime.now().format(TIME_FMT);
         String newRow  = String.join(",", empId, lastName, firstName, today, timeNow, "");
-
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(csv, StandardCharsets.UTF_8, true))) {
-            writer.newLine();
-            writer.write(newRow);
-        } catch (IOException e) {
-            System.err.println("[AttendanceDAOImpl] Write error (time-in): " + e.getMessage());
-            return null;
-        }
+        appendRow(CSV_PATH, CSV_HEADER, newRow);
         return new AttendanceRecord(empId, lastName, firstName, today, timeNow, "");
     }
 
     @Override
     public AttendanceRecord writeTimeOut(String empId) {
-        File csv = resolveFile(CSV_PATH);
-        if (csv == null) return null;
-
         String today   = LocalDate.now().format(DATE_FMT);
         String timeNow = LocalTime.now().format(TIME_FMT);
-        List<String> lines  = new ArrayList<>();
+
+        // Read all records, patch the open time-in row for today
+        ObservableList<AttendanceRecord> all = getAllAttendanceRecords();
         AttendanceRecord patched = null;
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                new FileInputStream(csv), StandardCharsets.UTF_8))) {
-            String line;
-            boolean isHeader = true;
-            while ((line = reader.readLine()) != null) {
-                if (isHeader) { lines.add(line); isHeader = false; continue; }
-                String[] f = line.split(",", 6);
-                if (f.length >= 6 && f[0].trim().equals(empId)
-                        && f[3].trim().equals(today) && f[5].trim().isEmpty()
-                        && patched == null) {
-                    f[5]    = timeNow;
-                    line    = String.join(",", f);
-                    patched = new AttendanceRecord(f[0].trim(), f[1].trim(), f[2].trim(),
-                                                   f[3].trim(), f[4].trim(), f[5].trim());
-                }
-                lines.add(line);
+        for (AttendanceRecord r : all) {
+            if (r.getEmpNumber().trim().equals(empId)
+                    && r.getDate().trim().equals(today)
+                    && r.getLogOut().trim().isEmpty()
+                    && patched == null) {
+                r.setLogOut(timeNow);
+                patched = r;
             }
-        } catch (IOException e) {
-            System.err.println("[AttendanceDAOImpl] Read error (time-out): " + e.getMessage());
+        }
+
+        if (patched == null) {
+            System.err.println("[AttendanceDAOImpl] No open time-in found for today.");
             return null;
         }
 
-        if (patched == null) return null;
+        // Rewrite the whole file with the patched record
+        List<String> lines = new ArrayList<>();
+        lines.add(CSV_HEADER);
+        for (AttendanceRecord r : all) {
+            lines.add(String.join(",",
+                    r.getEmpNumber(), r.getLastName(), r.getFirstName(),
+                    r.getDate(), r.getLogIn(), r.getLogOut()));
+        }
         rewriteFile(CSV_PATH, lines);
         return patched;
     }
@@ -141,7 +121,7 @@ public class AttendanceDAOImpl extends BaseDAO implements IAttendanceDAO {
         return totalHours;
     }
 
-    // ── Utility methods (also used by AttendanceDAO subclass) ─────────────────
+    // ── Utility methods ───────────────────────────────────────────────────────
 
     public boolean isDateMatch(String dateStr, String monthName, String targetYear) {
         String[] parts = dateStr.split("/");

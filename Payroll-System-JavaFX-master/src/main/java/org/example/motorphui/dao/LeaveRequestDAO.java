@@ -1,11 +1,11 @@
 package org.example.motorphui.dao;
 
 import org.example.motorphui.model.LeaveRequest;
+import org.example.motorphui.util.DataFileManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -16,15 +16,18 @@ import java.util.List;
 /**
  * CSV-backed implementation of {@link ILeaveDAO}.
  *
+ * All reads and writes go through DataFileManager, which targets the persistent
+ * external directory (~/.motorphui/data/) instead of the Gradle build output.
+ *
  * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseDAO, inheriting file-resolution helpers.
- *   ABSTRACTION   — Implements ILeaveDAO; callers depend on the interface.
- *   ENCAPSULATION — File paths and parsing logic are private.
+ *   INHERITANCE   — Extends BaseDAO.
+ *   ABSTRACTION   — Implements ILeaveDAO.
+ *   ENCAPSULATION — File name and parsing are private.
  */
 public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
 
-    private static final String CSV_RESOURCE_PATH =
-            "/org/example/motorphui/data/motorph_leave_records.csv";
+    private static final String CSV_PATH = "/org/example/motorphui/data/motorph_leave_records.csv";
+    private static final String FILENAME = "motorph_leave_records.csv";
 
     public static final String HEADER =
             "Leave ID,Last Name,First Name,Start Date,End Date,Days,Leave Type,Reason,Approved?";
@@ -37,7 +40,7 @@ public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
     @Override
     public ObservableList<LeaveRequest> getAllLeaveRequests() {
         ObservableList<LeaveRequest> list = FXCollections.observableArrayList();
-        try (BufferedReader reader = openReader(CSV_RESOURCE_PATH)) {
+        try (BufferedReader reader = openReader(CSV_PATH)) {
             if (reader == null) return list;
             String line;
             boolean isHeader = true;
@@ -66,9 +69,6 @@ public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
     public LeaveRequest submitLeaveRequest(String empId, String lastName, String firstName,
                                            String startDate, String endDate,
                                            String leaveType, String reason) {
-        File csv = resolveOrCreateFile();
-        if (csv == null) return null;
-
         String leaveId = generateLeaveId(empId);
         String days    = calculateDays(startDate, endDate);
 
@@ -76,51 +76,40 @@ public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
                 leaveId, lastName, firstName, startDate, endDate,
                 days, leaveType, escapeField(reason), "Pending");
 
-        try (BufferedWriter writer = new BufferedWriter(
-                new FileWriter(csv, StandardCharsets.UTF_8, true))) {
-            writer.newLine();
-            writer.write(newRow);
-        } catch (IOException e) {
-            System.err.println("[LeaveRequestDAO] Write error: " + e.getMessage());
-            return null;
-        }
+        appendRow(CSV_PATH, HEADER, newRow);
+
         return new LeaveRequest(leaveId, lastName, firstName, startDate, endDate,
                                 days, leaveType, reason, "Pending");
     }
 
     @Override
     public boolean updateStatus(String leaveId, String newStatus) {
-        File csv = resolveOrCreateFile();
-        if (csv == null) return false;
-
+        ObservableList<LeaveRequest> all = getAllLeaveRequests();
         List<String> lines   = new ArrayList<>();
         boolean      updated = false;
 
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(csv), StandardCharsets.UTF_8))) {
-            String line;
-            boolean isHeader = true;
-            while ((line = reader.readLine()) != null) {
-                if (isHeader) { lines.add(line); isHeader = false; continue; }
-                String[] f = line.split(",", 9);
-                if (f.length >= 9 && f[0].trim().equals(leaveId) && !updated) {
-                    f[8]    = newStatus;
-                    line    = String.join(",", f);
-                    updated = true;
-                }
-                lines.add(line);
+        lines.add(HEADER);
+        for (LeaveRequest r : all) {
+            if (r.getLeaveId().trim().equals(leaveId) && !updated) {
+                r.setApprovalStatus(newStatus);
+                updated = true;
             }
-        } catch (IOException e) {
-            System.err.println("[LeaveRequestDAO] Read error (update): " + e.getMessage());
-            return false;
+            lines.add(toCSVRow(r));
         }
 
         if (!updated) return false;
-        rewriteFile(CSV_RESOURCE_PATH, lines);
+        rewriteFile(CSV_PATH, lines);
         return true;
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────────
+    // ── Kept for backward compatibility (called by older code) ────────────────
+
+    /** @deprecated Use {@link #resolveFile(String)} via BaseDAO instead. */
+    public File resolveOrCreateFile() {
+        return DataFileManager.resolveFile(FILENAME);
+    }
+
+    // ── Private helpers ────────────────────────────────────────────────────────
 
     private LeaveRequest parseLine(String line) {
         String[] f = line.split(",", 9);
@@ -128,6 +117,13 @@ public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
         return new LeaveRequest(f[0].trim(), f[1].trim(), f[2].trim(),
                 f[3].trim(), f[4].trim(), f[5].trim(),
                 f[6].trim(), f[7].trim(), f[8].trim());
+    }
+
+    private String toCSVRow(LeaveRequest r) {
+        return String.join(",",
+                r.getLeaveId(), r.getLastName(), r.getFirstName(),
+                r.getStartDate(), r.getEndDate(), r.getDays(),
+                r.getLeaveType(), escapeField(r.getReason()), r.getApprovalStatus());
     }
 
     private String generateLeaveId(String empId) {
@@ -149,34 +145,5 @@ public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
     private String escapeField(String field) {
         if (field == null) return "";
         return field.contains(",") ? "\"" + field + "\"" : field;
-    }
-
-    /**
-     * Resolves the CSV to a writable File, creating it with a header row if
-     * it does not yet exist.
-     */
-    public File resolveOrCreateFile() {
-        try {
-            URL url = getClass().getResource(CSV_RESOURCE_PATH);
-            if (url != null && "file".equals(url.getProtocol())) {
-                return new File(url.toURI());
-            }
-        } catch (Exception ignored) {}
-        try {
-            URL base = getClass().getResource("/org/example/motorphui/data/");
-            if (base != null && "file".equals(base.getProtocol())) {
-                File f = new File(new File(base.toURI()), "motorph_leave_records.csv");
-                if (!f.exists()) {
-                    try (BufferedWriter w = new BufferedWriter(
-                            new FileWriter(f, StandardCharsets.UTF_8))) {
-                        w.write(HEADER);
-                    }
-                }
-                return f;
-            }
-        } catch (Exception e) {
-            System.err.println("[LeaveRequestDAO] Cannot create CSV file: " + e.getMessage());
-        }
-        return null;
     }
 }

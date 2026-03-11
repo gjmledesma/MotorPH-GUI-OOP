@@ -22,8 +22,6 @@ public class EmployeeDashboard {
     private Button profile_button, attendance_button, viewsalary_button, leaveform_button, fileticket_button;
     @FXML
     private Button logout_button;
-    @FXML
-    private Label nameLabel;
 
     private AllEmployee currentEmployee;
     
@@ -102,11 +100,6 @@ public class EmployeeDashboard {
     public void loadProfile(AllEmployee employee) {
         // Always keep currentEmployee in sync
         this.currentEmployee = employee;
-
-        
-        if (nameLabel != null && employee != null) {
-            nameLabel.setText(employee.getFirstName() +" "+ employee.getLastName());
-        }
 
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/motorphui/employee_profile.fxml"));
