@@ -2,39 +2,49 @@ package org.example.motorphui.dao;
 
 import org.example.motorphui.model.AllEmployee;
 import org.example.motorphui.model.AllEmployeePublic;
+import org.example.motorphui.model.EmployeeUser;
+import org.example.motorphui.model.FinanceUser;
+import org.example.motorphui.model.HRUser;
+import org.example.motorphui.model.ITUser;
 import org.example.motorphui.util.DataFileManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * DAO for all authentication operations.
+ * CSV-backed implementation of {@link IAuthDAO}.
  *
- * All CSV reads now go through DataFileManager so they target the same
- * persistent external directory (~/.motorphui/data/) that the write operations
- * use.  Previously the static authenticate() method opened the classpath
- * stream directly, which could read a stale/unmodified copy of the file.
+ * <h3>What changed</h3>
+ * <p>The four new factory methods ({@link #getEmployeeUser},
+ * {@link #getHRUser}, {@link #getFinanceUser}, {@link #getITUser}) build and
+ * return the appropriate {@code SystemUser} subclass after verifying
+ * credentials. All original methods are <em>identical</em> to the previous
+ * version.</p>
  *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseDAO.
- *   ABSTRACTION   — Implements IAuthDAO.
- *   ENCAPSULATION — File names and parsing logic are private.
+ * <h3>OOP principles</h3>
+ * <ul>
+ *   <li><b>Encapsulation</b> — credential checking is kept in the private
+ *       helpers; callers never touch CSV parsing directly.</li>
+ *   <li><b>Single Responsibility</b> — this class authenticates users and
+ *       constructs their model objects; session storage is
+ *       {@code SessionManager}'s responsibility.</li>
+ *   <li><b>Polymorphism</b> — each factory method returns the correct
+ *       {@code SystemUser} subtype; callers can store the result as
+ *       {@code SystemUser} without knowing the concrete class.</li>
+ * </ul>
  */
 public class AuthenticationDAO extends BaseDAO implements IAuthDAO {
 
     private static final AuthenticationDAO INSTANCE = new AuthenticationDAO();
 
-    // ── CSV file names (resolved via DataFileManager) ─────────────────────────
+    // ── CSV file names ────────────────────────────────────────────────────────
     private static final String EMPLOYEE_CREDENTIALS = "motorph_employee_credentials.csv";
     private static final String HR_CREDENTIALS       = "motorph_hr_credentials.csv";
     private static final String FINANCE_CREDENTIALS  = "motorph_finance_credentials.csv";
     private static final String IT_CREDENTIALS       = "motorph_it_credentials.csv";
     private static final String EMPLOYEE_DATA        = "motorph_employee_data.csv";
 
-    // ── Classpath resource paths (kept for BaseDAO.openReader compatibility) ──
-    private static final String RES = "/org/example/motorphui/data/";
-
-    // ── IAuthDAO implementation ───────────────────────────────────────────────
+    // ── IAuthDAO — original methods (UNCHANGED) ───────────────────────────────
 
     @Override
     public boolean authenticateEmployee(String empId, String username, String password) {
@@ -61,23 +71,60 @@ public class AuthenticationDAO extends BaseDAO implements IAuthDAO {
         return INSTANCE.findEmployee(empId);
     }
 
-    // ── Static delegate methods (backward compatibility with login controllers) ─
+    // ── IAuthDAO — new user-model factory methods ─────────────────────────────
 
-//    public static boolean authenticateHR(String username, String password) {
-//        return INSTANCE.checkCredentials(HR_CREDENTIALS, username, password);
-//    }
-//
-//    public static boolean authenticateFinance(String username, String password) {
-//        return INSTANCE.checkCredentials(FINANCE_CREDENTIALS, username, password);
-//    }
-//
-//    public static boolean authenticateIT(String username, String password) {
-//        return INSTANCE.checkCredentials(IT_CREDENTIALS, username, password);
-//    }
+    /**
+     * Verifies employee credentials and, on success, returns an
+     * {@link EmployeeUser} wrapping the employee's full data record.
+     *
+     */
+    @Override
+    public EmployeeUser getEmployeeUser(String empId, String username, String password) {
+        if (!authenticate(empId, username, password)) return null;
+        AllEmployee emp = findEmployee(empId);
+        return (emp != null) ? new EmployeeUser(emp) : null;
+    }
+
+    /**
+     * Verifies HR credentials and, on success, returns an {@link HRUser} model.
+     *
+     * POLYMORPHISM — the returned {@code HRUser} can be stored as a
+     * {@code SystemUser} in {@code SessionManager} alongside other user types.
+     */
+    @Override
+    public HRUser getHRUser(String username, String password) {
+        return checkCredentials(HR_CREDENTIALS, username, password)
+                ? new HRUser(username)
+                : null;
+    }
+
+    /**
+     * Verifies Finance credentials and, on success, returns a
+     * {@link FinanceUser} model.
+     */
+    @Override
+    public FinanceUser getFinanceUser(String username, String password) {
+        return checkCredentials(FINANCE_CREDENTIALS, username, password)
+                ? new FinanceUser(username)
+                : null;
+    }
+
+    /**
+     * Verifies IT credentials and, on success, returns an {@link ITUser} model.
+     */
+    @Override
+    public ITUser getITUser(String username, String password) {
+        return checkCredentials(IT_CREDENTIALS, username, password)
+                ? new ITUser(username)
+                : null;
+    }
+
+    // ── Static delegate (backward-compat with EmployeeLogin) ──────────────────
 
     /**
      * Authenticates an employee (empId + username + password).
-     * Reads via DataFileManager so it sees the same file as write operations.
+     * Static so that {@link org.example.motorphui.ui.EmployeeLogin} can call
+     * it without constructing an instance, preserving the original call-site.
      */
     public static boolean authenticate(String empId, String username, String password) {
         try (BufferedReader reader = DataFileManager.openReader(EMPLOYEE_CREDENTIALS)) {
@@ -97,11 +144,6 @@ public class AuthenticationDAO extends BaseDAO implements IAuthDAO {
         }
         return false;
     }
-
-//    /** Static delegate for fetching employee data. */
-//    public static AllEmployee getEmployeeData(String empId) {
-//        return INSTANCE.findEmployee(empId);
-//    }
 
     // ── Private helpers ────────────────────────────────────────────────────────
 

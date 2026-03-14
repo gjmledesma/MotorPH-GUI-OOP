@@ -12,20 +12,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * CSV-backed implementation of {@link IEmployeeDAO}.
- *
- * Centralises ALL employee file I/O in one place, removing the raw CSV
- * reading/writing that was previously scattered across HREmployeeView,
- * FinancePayroll, and other UI controllers.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseDAO, reusing resolveFile(), openReader(),
- *                   appendRow(), and rewriteFile() helpers.
- *   ABSTRACTION   — Implements IEmployeeDAO; callers depend on the interface,
- *                   not the concrete class.
- *   ENCAPSULATION — All CSV paths and parsing logic are private.
- */
 public class EmployeeDAOImpl extends BaseDAO implements IEmployeeDAO {
 
     private static final String CSV_PATH = "/org/example/motorphui/data/motorph_employee_data.csv";

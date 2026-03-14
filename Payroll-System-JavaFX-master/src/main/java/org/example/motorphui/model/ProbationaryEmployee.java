@@ -2,13 +2,6 @@ package org.example.motorphui.model;
 
 /**
  * Concrete employee model for Probationary employees.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends AllEmployee (which extends Person).
- *   POLYMORPHISM  — Overrides all three abstract methods from Person with
- *                   different values than RegularEmployee, demonstrating
- *                   subtype-specific behaviour via the same interface.
- *   ENCAPSULATION — Inherits all private fields; adds no new mutable state.
  */
 public class ProbationaryEmployee extends AllEmployee {
 

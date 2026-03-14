@@ -2,9 +2,6 @@ package org.example.motorphui.service;
 
 /**
  * Business-logic contract for Philippine payroll calculations.
- *
- * OOP — ABSTRACTION: Defines the payroll API without exposing bracket tables
- * or formula implementations.  PayrollCalculatorImpl provides the concrete logic.
  */
 public interface IPayrollService {
     double calculateSSSContribution(double basicSalary);

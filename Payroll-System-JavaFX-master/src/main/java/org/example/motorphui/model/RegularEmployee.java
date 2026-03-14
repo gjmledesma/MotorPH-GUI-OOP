@@ -2,11 +2,6 @@ package org.example.motorphui.model;
 
 /**
  * Concrete employee model for Regular (permanent) employees.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends AllEmployee (which extends Person).
- *   POLYMORPHISM  — Overrides all three abstract methods from Person.
- *   ENCAPSULATION — Inherits all private fields; adds no new mutable state.
  */
 public class RegularEmployee extends AllEmployee {
 

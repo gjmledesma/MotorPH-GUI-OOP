@@ -4,8 +4,6 @@ import javafx.beans.property.SimpleStringProperty;
 
 /**
  * Model for a single leave request row.
- * Columns mirror the TableView in LeaveManagement:
- *   Leave ID | Last Name | First Name | Start Date | End Date | Days | Leave Type | Reason | Approved?
  */
 public class LeaveRequest {
 

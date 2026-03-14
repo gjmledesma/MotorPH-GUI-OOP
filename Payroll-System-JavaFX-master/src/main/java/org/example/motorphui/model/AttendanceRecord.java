@@ -5,12 +5,6 @@ import javafx.beans.property.SimpleStringProperty;
 /**
  * Model class representing a single attendance record from the CSV.
  * Each field uses JavaFX StringProperty so the TableView can bind to it directly.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ENCAPSULATION — All fields are private; status is automatically recomputed
- *                   whenever logIn is mutated through the setter.
- *   POLYMORPHISM  — setLogIn() is overloaded: one variant takes only a time
- *                   string, another takes a time string and a custom threshold.
  */
 public class AttendanceRecord {
 

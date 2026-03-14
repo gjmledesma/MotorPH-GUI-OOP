@@ -6,9 +6,6 @@ import java.util.Set;
 
 /**
  * Data-access contract for employee CRUD operations.
- *
- * OOP — ABSTRACTION: Declares what can be done with employee records;
- * EmployeeDAOImpl provides the CSV-backed implementation.
  */
 public interface IEmployeeDAO {
     /** Returns all employees from the data store. */

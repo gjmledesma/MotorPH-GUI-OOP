@@ -12,13 +12,6 @@ import java.util.Set;
 /**
  * Business-logic implementation for employee management.
  * Delegates persistence to an {@link IEmployeeDAO} instance.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ABSTRACTION   — Implements IEmployeeService; depends on IEmployeeDAO
- *                   (not on the concrete EmployeeDAOImpl).
- *   ENCAPSULATION — The DAO reference is private; callers interact through
- *                   the service interface only.
- *   INHERITANCE   — Could be extended to add role-specific rules.
  */
 public class EmployeeServiceImpl implements IEmployeeService {
 

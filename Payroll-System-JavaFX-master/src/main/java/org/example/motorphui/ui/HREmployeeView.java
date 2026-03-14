@@ -23,11 +23,6 @@ import java.util.Set;
  *
  * Refactored to delegate all CSV reading and writing to {@link EmployeeDAOImpl}
  * (via the {@link IEmployeeDAO} interface) instead of containing raw file I/O.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ENCAPSULATION — The DAO reference is private; UI logic does not touch CSV files.
- *   ABSTRACTION   — Depends on IEmployeeDAO, not on the concrete implementation.
- *   LAYERED ARCHITECTURE — UI layer delegates data operations to DAO layer.
  */
 public class HREmployeeView {
 

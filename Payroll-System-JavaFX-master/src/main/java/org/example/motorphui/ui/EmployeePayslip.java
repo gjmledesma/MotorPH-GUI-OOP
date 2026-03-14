@@ -10,8 +10,8 @@ import java.util.Locale;
 /**
  * Controller for the Employee Payslip modal window.
  *
- * All data is pushed in by the parent (EmployeeViewSalary) via
- * {@link #setPayslipData} — no re-calculation happens here.
+ * All values are pre-computed by {@link EmployeeViewSalary} and injected via
+ * {@link #setPayslipData}; this class is purely a display controller.
  */
 public class EmployeePayslip {
 
@@ -57,9 +57,14 @@ public class EmployeePayslip {
     /**
      * Called by {@link EmployeeViewSalary} before the modal is shown.
      * Populates every label on the payslip with the pre-computed values.
+     *
+     * @param emp   the logged-in employee
+     * @param month full month name, e.g. {@code "June"}
+     * @param year  four-digit year string, e.g. {@code "2024"}
      */
     public void setPayslipData(AllEmployee emp,
                                String month,
+                               String year,
                                double hours,
                                double gross,
                                double sss,
@@ -75,8 +80,8 @@ public class EmployeePayslip {
         double clothing    = parse(emp.getClothingAllowance());
         double totalDeduct = sss + ph + pi + tax;
 
-        // Header
-        period_label.setText(month + " 2024");
+        // Header — show the user-selected period
+        period_label.setText(month + " " + year);
 
         // Employee info
         ps_empnum_label    .setText(emp.getEmployeeNumber());
@@ -99,10 +104,10 @@ public class EmployeePayslip {
         ps_gross_label   .setText(PESO.format(gross));
 
         // Deductions
-        ps_sss_con_label   .setText(PESO.format(sss));
-        ps_ph_con_label    .setText(PESO.format(ph));
-        ps_pi_con_label    .setText(PESO.format(pi));
-        ps_tax_label       .setText(PESO.format(tax));
+        ps_sss_con_label    .setText(PESO.format(sss));
+        ps_ph_con_label     .setText(PESO.format(ph));
+        ps_pi_con_label     .setText(PESO.format(pi));
+        ps_tax_label        .setText(PESO.format(tax));
         ps_totaldeduct_label.setText(PESO.format(totalDeduct));
 
         // Net pay

@@ -9,13 +9,6 @@ import java.util.List;
  * Every validate* method returns a human-readable error string
  * or null if the value is valid.  validateAll() collects every
  * failing rule so all errors can be shown at once.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ENCAPSULATION — Regex patterns are private constants; helpers are private static.
- *   POLYMORPHISM  — validateName() is overloaded with three signatures:
- *                     validateName(label, value)          — standard
- *                     validateName(value)                 — no label variant
- *                     validateName(label, value, maxLen)  — with max-length cap
  */
 public class EmployeeValidator {
 

@@ -19,9 +19,6 @@ import java.time.format.DateTimeFormatter;
  * Responsibilities:
  *   1. Allow the logged-in employee to submit a new IT support ticket.
  *   2. Display only the current employee's ticket history.
- *
- * ENCAPSULATION  – All @FXML fields are private; business logic delegated to DAO.
- * ABSTRACTION    – Hides CSV I/O behind {@link TicketRequestDAO}.
  */
 public class EmployeeTicketRequests {
 

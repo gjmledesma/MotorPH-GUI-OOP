@@ -2,16 +2,6 @@ package org.example.motorphui.dao;
 
 import org.example.motorphui.service.AttendanceService;
 
-/**
- * Backward-compatible wrapper retained for any code that depends on the
- * original {@code AttendanceDAO} name.
- *
- * All behaviour is delegated to {@link AttendanceDAOImpl}.  New code should
- * depend on {@link IAttendanceDAO} or use AttendanceDAOImpl directly.
- *
- * OOP — INHERITANCE: Extends AttendanceDAOImpl, and also implements
- * the legacy AttendanceService interface so old callers continue to compile.
- */
 public class AttendanceDAO extends AttendanceDAOImpl implements AttendanceService {
 
     private static final String CSV_PATH =

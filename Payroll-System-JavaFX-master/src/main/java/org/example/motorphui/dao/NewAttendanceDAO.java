@@ -9,7 +9,6 @@ import javafx.collections.ObservableList;
  * Delegates all operations to {@link AttendanceDAOImpl}.  New code should
  * use {@link IAttendanceDAO} or {@link AttendanceDAOImpl} directly.
  *
- * OOP — INHERITANCE: Extends AttendanceDAOImpl.
  */
 public class NewAttendanceDAO extends AttendanceDAOImpl {
 

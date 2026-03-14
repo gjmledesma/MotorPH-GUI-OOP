@@ -6,16 +6,6 @@ import javafx.beans.property.StringProperty;
 /**
  * Abstract employee model.  Extends {@link Person} and holds all 16 remaining
  * employee data fields as PRIVATE StringProperties.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ENCAPSULATION — All fields are private; accessed via public property
- *                   accessors and explicit getters/setters with validation.
- *   INHERITANCE   — Extends Person; subclasses provide concrete employee types.
- *   ABSTRACTION   — Inherits abstract methods from Person; subclasses must
- *                   implement getDisplayRole(), getEmployeeType(),
- *                   and getBenefitMultiplier().
- *   POLYMORPHISM  — toCSVRow() is declared here and can be overridden;
- *                   getFullName() overloads are inherited from Person.
  */
 public abstract class AllEmployee extends Person {
 

@@ -2,6 +2,7 @@ package org.example.motorphui.ui;
 
 import org.example.motorphui.dao.AuthenticationDAO;
 import org.example.motorphui.model.AllEmployee;
+import org.example.motorphui.model.EmployeeUser;
 import org.example.motorphui.session.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,15 +16,25 @@ import javafx.stage.Stage;
 /**
  * Login controller for Employee users.
  *
- * Extends BaseLoginController and adds the Employee-ID field that is unique
- * to the employee login screen.
+ * <h3>What changed (backend only)</h3>
+ * <p>{@link #handleLoginButton} now also constructs an {@link EmployeeUser}
+ * model and stores it in {@link SessionManager} alongside the existing
+ * {@code AllEmployee} reference.  Every existing call-site ({@code EmployeeProfile},
+ * {@code EmployeeViewSalary}, etc.) that reads
+ * {@code SessionManager.getInstance().getCurrentEmployee()} continues to work
+ * without any change.</p>
  *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseLoginController instead of AuthenticationDAO.
- *   POLYMORPHISM  — Overrides performAuthentication() with three-argument
- *                   employee authentication (employee ID + username + password),
- *                   and overrides onLoginSuccess() to load the employee session.
- *   ENCAPSULATION — employeeid_field is private, accessed only within this class.
+ * <h3>OOP principles</h3>
+ * <ul>
+ *   <li><b>Polymorphism</b> — overrides hooks from {@link BaseLoginController}
+ *       (Template Method pattern).</li>
+ *   <li><b>Encapsulation</b> — raw credentials are used only here; the rest of
+ *       the app interacts with the typed {@code EmployeeUser} / {@code AllEmployee}
+ *       models through {@code SessionManager}.</li>
+ *   <li><b>Composition</b> — {@code EmployeeUser} <em>wraps</em> the
+ *       {@code AllEmployee} rather than replacing it, so the dual-session fields
+ *       stay consistent.</li>
+ * </ul>
  */
 public class EmployeeLogin extends BaseLoginController {
 
@@ -49,17 +60,15 @@ public class EmployeeLogin extends BaseLoginController {
         return "MotorPH Employee Dashboard";
     }
 
-    // ── Override initialize to add Employee-ID blank check ────────────────────
+    // ── Initialize ────────────────────────────────────────────────────────────
 
     @FXML
     @Override
     protected void initialize() {
         super.initialize();
-        // nothing extra needed — the employee-ID check is handled in
-        // handleLoginButton() via the overridden performAuthentication()
     }
 
-    // ── Override handleLoginButton to validate employee ID field too ──────────
+    // ── Login handler — stores both AllEmployee and EmployeeUser in session ───
 
     @FXML
     @Override
@@ -74,9 +83,21 @@ public class EmployeeLogin extends BaseLoginController {
         }
 
         if (AuthenticationDAO.authenticate(empId, username, password)) {
+            // ── 1. Fetch full employee data record (existing behaviour) ───────
             AllEmployee employee = new AuthenticationDAO().getEmployeeData(empId);
+
+            // ── 2. Store AllEmployee for existing screens (UNCHANGED path) ────
             SessionManager.getInstance().setCurrentEmployee(employee);
+
+            // ── 3. Build and store EmployeeUser (new SystemUser session) ──────
+            //    EmployeeUser wraps the same AllEmployee object, so both session
+            //    references always point at the same underlying data.
+            EmployeeUser employeeUser = new EmployeeUser(employee);
+            SessionManager.getInstance().setCurrentUser(employeeUser);
+
+            // ── 4. Navigate to the employee dashboard (unchanged) ─────────────
             loadEmployeeDashboard(employee, event);
+
         } else {
             showAlert(Alert.AlertType.ERROR, "Login Failed",
                       "Invalid credentials. Please try again.");

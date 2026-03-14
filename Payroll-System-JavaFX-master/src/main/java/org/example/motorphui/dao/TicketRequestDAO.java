@@ -12,11 +12,6 @@ import java.util.List;
 /**
  * Data-access object for IT support ticket records.
  * Extends BaseDAO to use shared file-resolution and I/O helpers.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseDAO; file helpers are inherited, not duplicated.
- *   ENCAPSULATION — Parsing, escaping, and file paths are private.
- *   ABSTRACTION   — Hides CSV details from callers.
  */
 public class TicketRequestDAO extends BaseDAO {
 

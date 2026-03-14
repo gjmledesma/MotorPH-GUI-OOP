@@ -13,10 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
-/**
- *
- * @author gabrielledesma
- */
 public class FinanceDashboard {
     
     @FXML

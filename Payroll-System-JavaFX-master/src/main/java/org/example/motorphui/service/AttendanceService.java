@@ -4,10 +4,6 @@
  */
 package org.example.motorphui.service;
 
-/**
- *
- * @author gabrielledesma
- */
 public interface AttendanceService {
     double getMonthlyHours(String empNumber, String monthName, String year);
     double parseTimeToDecimal(String time);

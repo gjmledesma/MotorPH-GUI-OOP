@@ -14,12 +14,6 @@ import javafx.stage.Stage;
  *
  * Previously this class was completely empty.  It now provides a confirmation
  * form that HR users complete before a deletion is committed.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ENCAPSULATION — All fields are private; the employee reference and DAO
- *                   are set via typed setter methods.
- *   ABSTRACTION   — Uses IEmployeeDAO so the controller is decoupled from the
- *                   CSV-backed implementation.
  */
 public class HRDeleteEmployee {
 

@@ -14,11 +14,6 @@ import java.nio.file.*;
  * these source files.  No external directory (e.g. ~/.motorphui/) is created
  * or used.
  *
- * NOTE: This design is intentional for development/desktop-app use where the
- * program is always run from its project root (e.g. via an IDE or a run
- * script sitting at the repo root).  If you ever package this as a
- * self-contained JAR, resources inside the JAR are read-only — you would
- * need to revisit this strategy then.
  */
 public final class DataFileManager {
 

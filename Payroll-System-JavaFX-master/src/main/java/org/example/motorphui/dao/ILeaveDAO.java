@@ -5,9 +5,6 @@ import javafx.collections.ObservableList;
 
 /**
  * Data-access contract for leave request operations.
- *
- * OOP — ABSTRACTION: Exposes leave request operations without leaking
- * CSV file paths or parsing logic to callers.
  */
 public interface ILeaveDAO {
     /** Returns all leave requests in the data store. */

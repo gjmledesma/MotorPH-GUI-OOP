@@ -7,38 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Abstract base class for all DAO implementations.
- *
- * BUG FIXES IN THIS VERSION
- * ─────────────────────────
- * 1. appendRow — trailing-newline guard
- *    CSV files that were created by Excel, Notepad, or earlier app versions
- *    often do not end with a newline character.  When a Java FileWriter opened
- *    in append mode writes to such a file the new row is glued directly onto
- *    the last existing row (e.g. employee 10035 appeared on the same line as
- *    10034).  The fix writes a newline separator before every appended row
- *    when the file already has content; blank lines are harmless because
- *    readDataLines() skips them.
- *
- * 2. resolveFile / write path — DataFileManager
- *    The original resolveFile used getClass().getResource() which resolves to
- *    the Gradle build output directory (build/resources/main/).  Two problems:
- *      a) Writes went to the build folder, wiped on every ./gradlew build.
- *      b) When running on the JavaFX module path the URL protocol is not
- *         "file", so resolveFile returned null and appendRow silently did
- *         nothing — the root cause of ticket requests never being saved.
- *    All I/O is now routed through DataFileManager which maintains a stable
- *    writable directory at ~/.motorphui/data/ and seeds it from classpath
- *    resources on first run.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ABSTRACTION   — Provides a reusable template; concrete DAOs call protected
- *                   helpers instead of repeating raw I/O code.
- *   ENCAPSULATION — All helpers are protected; callers outside the DAO layer
- *                   cannot access them.
- *   INHERITANCE   — All concrete DAOs extend BaseDAO.
- */
 public abstract class BaseDAO {
 
     // ── Private utility ────────────────────────────────────────────────────────

@@ -7,10 +7,6 @@ import javafx.collections.ObservableList;
 
 /**
  * Business-logic implementation for leave request management.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ABSTRACTION   — Implements ILeaveService; depends on ILeaveDAO.
- *   ENCAPSULATION — The DAO reference is private.
  */
 public class LeaveServiceImpl implements ILeaveService {
 

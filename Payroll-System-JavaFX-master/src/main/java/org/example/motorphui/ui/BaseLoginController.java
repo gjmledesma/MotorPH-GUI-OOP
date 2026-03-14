@@ -17,12 +17,6 @@ import javafx.stage.Stage;
  *   performAuthentication() — the hook; subclasses supply the actual auth logic.
  *   getDashboardFxml()   — the hook; subclasses supply the FXML path to load on success.
  *   getDashboardTitle()  — the hook; subclasses supply the window title.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ABSTRACTION   — Abstract class with abstract methods for subclass-specific logic.
- *   INHERITANCE   — HRLogin, FinanceLogin, ITAdminLogin, EmployeeLogin all extend this.
- *   ENCAPSULATION — Shared FXML fields are protected; helpers are private.
- *   POLYMORPHISM  — performAuthentication() is overridden differently by each subclass.
  */
 public abstract class BaseLoginController {
 

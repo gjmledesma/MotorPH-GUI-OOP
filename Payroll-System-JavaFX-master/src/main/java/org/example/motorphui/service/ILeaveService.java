@@ -5,9 +5,6 @@ import javafx.collections.ObservableList;
 
 /**
  * Business-logic contract for leave request operations.
- *
- * OOP — ABSTRACTION: Exposes leave business rules independently of the
- * underlying CSV data store.
  */
 public interface ILeaveService {
     ObservableList<LeaveRequest> getAllLeaveRequests();

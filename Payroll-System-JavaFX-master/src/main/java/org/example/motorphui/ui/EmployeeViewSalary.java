@@ -13,25 +13,26 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.text.NumberFormat;
+import java.time.Year;
 import java.util.Locale;
 
 /**
  * Controller for the Employee View Salary screen.
  *
  * Shows a monthly salary summary for the logged-in employee.
- * A "View Full Payslip" button opens the EmployeePayslip modal.
+ * Both a month AND a year must be chosen before the summary is computed.
+ * The "View Full Payslip" button opens the {@link EmployeePayslip} modal,
+ * forwarding the selected period (month + year) along with pre-computed values.
  */
 public class EmployeeViewSalary {
 
     // ── Services ─────────────────────────────────────────────────────────────
 
-    private final SalaryTaxCalculatorService calc      = new SalaryTaxCalculator();
+    private final SalaryTaxCalculatorService calc       = new SalaryTaxCalculator();
     private final AttendanceService           attendance = new AttendanceDAO();
 
     private static final NumberFormat PESO =
@@ -47,8 +48,9 @@ public class EmployeeViewSalary {
     @FXML private Label emp_id_label;
     @FXML private Label emp_position_label;
 
-    // Month selector
-    @FXML private ComboBox<String> month_combo;
+    // Pay-period pickers
+    @FXML private ComboBox<String>  month_combo;
+    @FXML private ComboBox<Integer> year_combo;
 
     // Summary card — Earnings
     @FXML private Label hours_value;
@@ -76,7 +78,7 @@ public class EmployeeViewSalary {
 
     private AllEmployee currentEmployee;
 
-    // Cached values so the payslip modal can receive them without recomputing
+    // Cached computed values so the payslip modal can reuse them
     private double cachedHours;
     private double cachedGross;
     private double cachedSss;
@@ -84,7 +86,8 @@ public class EmployeeViewSalary {
     private double cachedPi;
     private double cachedTax;
     private double cachedNet;
-    private String selectedMonth;
+    private String  selectedMonth;
+    private String  selectedYear;   // kept as String because DAO accepts String
 
     // ── Init ──────────────────────────────────────────────────────────────────
 
@@ -100,6 +103,7 @@ public class EmployeeViewSalary {
 
         populateHeader();
         setupMonthCombo();
+        setupYearCombo();
         clearSummary();
         view_payslip_btn.setDisable(true);
     }
@@ -113,42 +117,74 @@ public class EmployeeViewSalary {
     }
 
     private void setupMonthCombo() {
-        // Only the months that actually have attendance data
         month_combo.setItems(FXCollections.observableArrayList(
-                "June", "July", "August", "September",
-                "October", "November", "December"));
-        month_combo.setPromptText("Select month…");
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"));
+        month_combo.setPromptText("Month…");
 
         month_combo.getSelectionModel().selectedItemProperty().addListener(
                 (obs, old, month) -> {
                     if (month != null) {
                         selectedMonth = month;
-                        recalculate(month);
-                        view_payslip_btn.setDisable(false);
+                        tryRecalculate();
+                    }
+                });
+    }
+
+    private void setupYearCombo() {
+        int currentYear = Year.now().getValue();
+        java.util.List<Integer> years = new java.util.ArrayList<>();
+        for (int y = currentYear - 5; y <= currentYear + 0; y++) {
+            years.add(y);
+        }
+        year_combo.setItems(FXCollections.observableArrayList(years));
+        year_combo.setPromptText("Year…");
+
+        // Default to 2024 if it is in the list; otherwise the current year
+        int defaultYear = years.contains(2024) ? 2024 : currentYear;
+        year_combo.getSelectionModel().select(Integer.valueOf(defaultYear));
+        selectedYear = String.valueOf(defaultYear);
+
+        year_combo.getSelectionModel().selectedItemProperty().addListener(
+                (obs, old, year) -> {
+                    if (year != null) {
+                        selectedYear = String.valueOf(year);
+                        tryRecalculate();
                     }
                 });
     }
 
     // ── Calculation ───────────────────────────────────────────────────────────
 
-    private void recalculate(String month) {
-        double hours      = attendance.getMonthlyHours(currentEmployee.getEmployeeNumber(), month, "2024");
-        double hourlyRate = parse(currentEmployee.getHourlyRate());
-        double basicPay   = hours * hourlyRate;
-        double rice       = parse(currentEmployee.getRiceSubsidy());
-        double phone      = parse(currentEmployee.getPhoneAllowance());
-        double clothing   = parse(currentEmployee.getClothingAllowance());
-        double gross      = basicPay + rice + phone + clothing;
+    /**
+     * Fires recalculation only when both a month and a year have been chosen.
+     * Also gates the View Payslip button on the same condition.
+     */
+    private void tryRecalculate() {
+        if (selectedMonth == null || selectedYear == null) return;
+        recalculate(selectedMonth, selectedYear);
+        view_payslip_btn.setDisable(false);
+    }
 
-        double basic      = parse(currentEmployee.getBasicSalary());
-        double sss        = calc.calculateSSSContribution(basic);
-        double ph         = calc.calculatePhilHealthContribution(basic);
-        double pi         = calc.calculatePagibigContribution(basic);
-        double tax        = calc.calculateWithholdingTax(basic, sss, ph, pi);
+    private void recalculate(String month, String year) {
+        double hours       = attendance.getMonthlyHours(
+                                 currentEmployee.getEmployeeNumber(), month, year);
+        double hourlyRate  = parse(currentEmployee.getHourlyRate());
+        double basicPay    = hours * hourlyRate;
+        double rice        = parse(currentEmployee.getRiceSubsidy());
+        double phone       = parse(currentEmployee.getPhoneAllowance());
+        double clothing    = parse(currentEmployee.getClothingAllowance());
+        double gross       = basicPay + rice + phone + clothing;
+
+        double basic       = parse(currentEmployee.getBasicSalary());
+        double sss         = calc.calculateSSSContribution(basic);
+        double ph          = calc.calculatePhilHealthContribution(basic);
+        double pi          = calc.calculatePagibigContribution(basic);
+        double tax         = calc.calculateWithholdingTax(basic, sss, ph, pi);
         double totalDeduct = sss + ph + pi + tax;
-        double net        = gross - totalDeduct;
+        double net         = gross - totalDeduct;
 
-        // Cache for payslip modal
+        // Cache for the payslip modal
         cachedHours = hours;
         cachedGross = gross;
         cachedSss   = sss;
@@ -157,7 +193,7 @@ public class EmployeeViewSalary {
         cachedTax   = tax;
         cachedNet   = net;
 
-        // ── Update earnings labels ─────────────────────────────────────────
+        // ── Earnings labels ────────────────────────────────────────────────
         hours_value      .setText(String.format("%.2f hrs", hours));
         rate_value       .setText(PESO.format(hourlyRate));
         basic_pay_value  .setText(PESO.format(basicPay));
@@ -166,17 +202,15 @@ public class EmployeeViewSalary {
         clothing_value   .setText(PESO.format(clothing));
         gross_value      .setText(PESO.format(gross));
 
-        // ── Update deduction labels ────────────────────────────────────────
-        sss_value       .setText(PESO.format(sss));
-        philhealth_value.setText(PESO.format(ph));
-        pagibig_value   .setText(PESO.format(pi));
-        tax_value       .setText(PESO.format(tax));
+        // ── Deduction labels ───────────────────────────────────────────────
+        sss_value         .setText(PESO.format(sss));
+        philhealth_value  .setText(PESO.format(ph));
+        pagibig_value     .setText(PESO.format(pi));
+        tax_value         .setText(PESO.format(tax));
         total_deduct_value.setText(PESO.format(totalDeduct));
 
-        // ── Net pay ───────────────────────────────────────────────────────
+        // ── Net pay ────────────────────────────────────────────────────────
         net_value.setText(PESO.format(net));
-
-        // Colour net pay red when negative (unexpected edge case)
         net_value.getStyleClass().removeAll("net-positive", "net-negative");
         net_value.getStyleClass().add(net >= 0 ? "net-positive" : "net-negative");
     }
@@ -202,13 +236,14 @@ public class EmployeeViewSalary {
             controller.setPayslipData(
                     currentEmployee,
                     selectedMonth,
+                    selectedYear,
                     cachedHours,
                     cachedGross,
                     cachedSss, cachedPh, cachedPi, cachedTax,
                     cachedNet);
 
             Stage modal = new Stage();
-            modal.setTitle("Payslip — " + selectedMonth + " 2024");
+            modal.setTitle("Payslip — " + selectedMonth + " " + selectedYear);
             modal.initModality(Modality.APPLICATION_MODAL);
             modal.initOwner(view_payslip_btn.getScene().getWindow());
             modal.setScene(new Scene(root));

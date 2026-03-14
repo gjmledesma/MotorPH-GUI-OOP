@@ -6,8 +6,6 @@ import javafx.collections.ObservableList;
 /**
  * Data-access contract for attendance record operations.
  *
- * OOP — ABSTRACTION: Separates what operations are possible from how the
- * CSV file is read or written.
  */
 public interface IAttendanceDAO {
     /** Returns every attendance record in the data store. */

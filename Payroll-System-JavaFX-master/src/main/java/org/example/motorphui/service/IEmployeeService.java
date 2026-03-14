@@ -8,8 +8,6 @@ import java.util.Set;
 /**
  * Business-logic contract for employee management operations.
  *
- * OOP — ABSTRACTION: Separates business rules (validation, duplicate checks)
- * from data-access details.
  */
 public interface IEmployeeService {
     ObservableList<AllEmployee> getAllEmployees();

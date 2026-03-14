@@ -1,20 +1,12 @@
 package org.example.motorphui.service;
 
 /**
- * Philippine payroll deduction calculator.
+ * Payroll deduction calculator.
  *
  * Moved from the model package to the service package where business logic
  * correctly belongs.  The model-layer SalaryTaxCalculator is retained as a
  * thin subclass for backward compatibility.
  *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ABSTRACTION   — Implements IPayrollService and the legacy
- *                   SalaryTaxCalculatorService interfaces.
- *   ENCAPSULATION — All bracket tables are private constants; callers use
- *                   only the typed public methods.
- *   POLYMORPHISM  — calculateWithholdingTax() is overloaded:
- *                     (salary, sss, ph, pi)           — standard version
- *                     (salary, sss, ph, pi, extraDeductions) — with extras
  */
 public class PayrollCalculatorImpl implements IPayrollService, SalaryTaxCalculatorService {
 

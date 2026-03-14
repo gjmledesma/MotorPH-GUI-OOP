@@ -18,11 +18,6 @@ import java.util.List;
  *
  * All reads and writes go through DataFileManager, which targets the persistent
  * external directory (~/.motorphui/data/) instead of the Gradle build output.
- *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends BaseDAO.
- *   ABSTRACTION   — Implements ILeaveDAO.
- *   ENCAPSULATION — File name and parsing are private.
  */
 public class LeaveRequestDAO extends BaseDAO implements ILeaveDAO {
 

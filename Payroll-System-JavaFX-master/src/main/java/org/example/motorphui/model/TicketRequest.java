@@ -6,14 +6,6 @@ import javafx.beans.property.StringProperty;
 /**
  * Model representing a single IT support ticket.
  *
- * ENCAPSULATION – All fields are private StringProperty; access via getters/setters.
- * ABSTRACTION   – Callers work with typed helpers (isPending, isResolved, etc.)
- *                 rather than raw status strings.
- *
- * CSV column order (10 fields):
- *   Ticket ID | Employee ID | Last Name | First Name |
- *   Category  | Subject     | Description | Date Filed |
- *   Status    | IT Remarks
  */
 public class TicketRequest {
 

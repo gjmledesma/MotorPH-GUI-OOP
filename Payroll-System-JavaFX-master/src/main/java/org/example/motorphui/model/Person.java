@@ -6,13 +6,6 @@ import javafx.beans.property.StringProperty;
 /**
  * Abstract base class representing any person in the MotorPH system.
  *
- * OOP PRINCIPLES DEMONSTRATED:
- *   ABSTRACTION   — Declares abstract methods that subclasses must implement.
- *   ENCAPSULATION — All fields are private; accessed only via public getters/setters.
- *   INHERITANCE   — AllEmployee extends this class; RegularEmployee and
- *                   ProbationaryEmployee extend AllEmployee.
- *   POLYMORPHISM  — getFullName() is overloaded (two signatures);
- *                   abstract methods are overridden by every concrete subclass.
  */
 public abstract class Person {
 

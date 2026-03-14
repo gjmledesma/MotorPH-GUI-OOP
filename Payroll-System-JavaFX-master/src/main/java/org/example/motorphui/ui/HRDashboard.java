@@ -31,12 +31,6 @@ public class HRDashboard {
         setActiveButton(emp_button);
     }
 
-//    @FXML
-//    private void onPayrollClicked() {
-//        loadView("/org/example/motorphui/hr_payroll.fxml");
-//        setActiveButton(payroll_button);
-//    }
-
     @FXML
     private void onLeaveClicked() {
         loadView("/org/example/motorphui/leave_management.fxml");

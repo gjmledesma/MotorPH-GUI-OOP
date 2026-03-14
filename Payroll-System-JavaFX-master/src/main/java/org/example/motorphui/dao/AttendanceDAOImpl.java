@@ -13,10 +13,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * CSV-backed implementation of {@link IAttendanceDAO}.
- * All reads and writes go through DataFileManager (via BaseDAO helpers).
- */
 public class AttendanceDAOImpl extends BaseDAO implements IAttendanceDAO {
 
     private static final String CSV_PATH = "/org/example/motorphui/data/motorph_attendance_records.csv";

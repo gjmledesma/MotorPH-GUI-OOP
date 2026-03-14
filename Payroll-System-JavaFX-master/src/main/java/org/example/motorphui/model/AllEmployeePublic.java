@@ -8,13 +8,6 @@ package org.example.motorphui.model;
  * New code should prefer the factory method {@link AllEmployee#create} or
  * use {@link RegularEmployee} / {@link ProbationaryEmployee} directly.
  *
- * OOP PRINCIPLES DEMONSTRATED:
- *   INHERITANCE   — Extends AllEmployee (Person → AllEmployee → AllEmployeePublic).
- *   POLYMORPHISM  — Overrides all three abstract methods from Person;
- *                   getDisplayRole() and getEmployeeType() delegate to the
- *                   status field rather than being hard-coded, allowing one
- *                   class to serve both Regular and Probationary employees.
- *   ENCAPSULATION — Inherits all private fields from AllEmployee/Person.
  */
 public class AllEmployeePublic extends AllEmployee {
 

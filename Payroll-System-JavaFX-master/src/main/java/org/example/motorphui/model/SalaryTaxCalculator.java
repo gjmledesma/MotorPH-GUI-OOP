@@ -11,7 +11,6 @@ import org.example.motorphui.service.SalaryTaxCalculatorService;
  * This class extends PayrollCalculatorImpl so that any code instantiating
  * {@code new SalaryTaxCalculator()} continues to work without changes.
  *
- * OOP — INHERITANCE: Extends PayrollCalculatorImpl.
  *
  * @deprecated Use {@link PayrollCalculatorImpl} directly or via
  *             {@link org.example.motorphui.service.IPayrollService}.

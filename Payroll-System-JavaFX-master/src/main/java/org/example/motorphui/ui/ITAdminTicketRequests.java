@@ -15,9 +15,6 @@ import org.example.motorphui.model.TicketRequest;
  * Responsibilities:
  *   1. Display all submitted ticket records from the CSV.
  *   2. Allow IT admin to update a ticket's status and add remarks.
- *
- * ENCAPSULATION – All @FXML fields are private; updates delegated to DAO.
- * ABSTRACTION   – Hides CSV I/O behind {@link TicketRequestDAO}.
  */
 public class ITAdminTicketRequests {
 

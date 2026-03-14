@@ -12,10 +12,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO for employee-facing time-in / time-out operations.
- * Extends BaseDAO; all I/O goes through DataFileManager.
- */
 public class EmployeeAttendanceDAO extends BaseDAO {
 
     private static final String CSV_PATH = "/org/example/motorphui/data/motorph_attendance_records.csv";
@@ -68,7 +64,6 @@ public class EmployeeAttendanceDAO extends BaseDAO {
         String timeNow = LocalTime.now().format(TIME_FMT);
 
         ObservableList<AttendanceRecord> all = getRecordsForEmployee(empId);
-        // Also need ALL records to rewrite the full file
         ObservableList<AttendanceRecord> allRecords = getAllRecords();
 
         AttendanceRecord patched = null;
